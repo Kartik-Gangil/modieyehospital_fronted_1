@@ -188,7 +188,7 @@ const ContextProvider = ({ children }) => {
       const response = await getData(url);
       const data = response;
 
-      console.log("Patient API Response:", data);
+      // console.log("Patient API Response:", data);
 
       // ✅ normalize Appointment once
       const appointments = Array.isArray(data?.Appointment)

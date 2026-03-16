@@ -49,7 +49,6 @@ export default function Posterior({ onClose, onRefresh , index }) {
 
   }, []);
 
-console.log(index)
 
   const Edit = async () => {
     const formData = new FormData();

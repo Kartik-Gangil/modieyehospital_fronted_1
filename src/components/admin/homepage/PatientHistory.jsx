@@ -372,8 +372,11 @@ export default function PatientHistory({ onRefresh }) {
 
         <h3 className="fs-5 fw-bold m-0">Refraction</h3>
         <button className="btn p-0 border-0 bg-transparent" style={{ marginRight: 8 }}>
-          <img src="/images/printer.png" alt="edit" style={{ width: 17 }} onClick={() => handlePrint("refraction")} />
-          <img src="/images/pencil.png" alt="edit" style={{ width: 17, marginLeft: 10 }} onClick={() => { openDialog("Refraction" , refractionData[0].id ).then(() => onRefresh()) }} />
+          <img src="/images/printer.png" alt="edit" style={{ width: 17 }} onClick={() => handlePrint("refraction", refractionData[0])} />
+          <img src="/images/pencil.png" alt="edit" style={{ width: 17, marginLeft: 10 }} onClick={() => {
+            openDialog("Refraction", refractionData ? refractionData[0]?.id : null)
+            onRefresh()
+          }} />
         </button>
 
       </div>
