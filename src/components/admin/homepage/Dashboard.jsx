@@ -99,9 +99,9 @@ export default function DashBoard()
         Doctor Examination
       </div>
 
-      <div className="print-only">
+      {/* <div className="print-only">
         <PrintHeader Name={patientData.FullName} AppointmentNo={Aid.slice(-4)} MRDNo={patientData.id} Age={patientData.Age} DOB={patientData.Dob} Date={new Date().toLocaleDateString()} DrName={DoctorDetail.FullName} />
-      </div>
+      </div> */}
 
 
       <div className="px-3">
@@ -151,7 +151,7 @@ export default function DashBoard()
           <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
               <span className="input-group-text">Reffered By:</span>
-              <input type="text" className="form-control" disabled />
+              <input type="text" className="form-control" value={patientData.Reffered_by || "N/A"} disabled />
             </div>
           </div>
 
@@ -170,12 +170,12 @@ export default function DashBoard()
           </div>
 
 
-          {/* <div className="col-xs-12 col-lg-2">
+          <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
               <span className="input-group-text">Last Visit Date:</span>
               <input type="text" className="form-control" disabled value={patientData.Latest_Apt_Date} />
             </div>
-          </div> */}
+          </div>
 
           <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">

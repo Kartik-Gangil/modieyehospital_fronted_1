@@ -23,7 +23,8 @@ const ContextProvider = ({ children }) => {
     FullName: "",
     Dob: "",
     Latest_Apt: "",
-    Latest_Apt_Date: ""
+    Latest_Apt_Date: "",
+    Reffered_by: ""
   })
 
   const [vision, SetVision] = useState([{
@@ -206,7 +207,8 @@ const ContextProvider = ({ children }) => {
         FullName: data?.FullName ?? "",
         Dob: data?.DOB ? new Date(data.DOB).toLocaleDateString() : "",
         Latest_Apt: data?.Latest_Apt ?? "",
-        Latest_Apt_Date: data?.Latest_Apt_Date ?? ""
+        Latest_Apt_Date: data?.Latest_Apt_Date ?? "",
+        Reffered_by: data?.Reffered_by ?? ""
       });
 
       // ---------------- COMPLAINT ----------------
@@ -432,7 +434,7 @@ const ContextProvider = ({ children }) => {
       }
       return result
     } catch (error) {
-     return console.log(error)
+      return console.log(error)
     }
   }
 
