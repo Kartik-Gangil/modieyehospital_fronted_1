@@ -99,9 +99,9 @@ export default function DashBoard()
         Doctor Examination
       </div>
 
-      {/* <div className="print-only">
+      <div className="print-only">
         <PrintHeader Name={patientData.FullName} AppointmentNo={Aid.slice(-4)} MRDNo={patientData.id} Age={patientData.Age} DOB={patientData.Dob} Date={new Date().toLocaleDateString()} DrName={DoctorDetail.FullName} />
-      </div> */}
+      </div>
 
 
       <div className="px-3">

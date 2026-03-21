@@ -2,6 +2,7 @@ import { useContext, useState } from 'react'
 import Header from '../homepage/Header'
 import MainContext from '../../../context/MainContext'
 import { useEffect } from 'react'
+import { putData } from '../../../services/FetchNodeAdminServices';
 
 export default function ShowPatientDetails() {
   const { allPatients, getAllPatients } = useContext(MainContext);
@@ -28,9 +29,14 @@ export default function ShowPatientDetails() {
 
   const handleClose = () => setShowModal(false)
 
-  const handleSave = () => {
+  const handleSave = async() => {
     console.log("Updated Patient:", selectedPatient)
-    // call update API here
+    try {
+      const data = await putData('')
+      
+    } catch (error) {
+      
+    }
     setShowModal(false)
   }
 
