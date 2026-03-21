@@ -254,7 +254,7 @@ export default function Patient({ onRefresh })
       <button className="btn p-0 border-0 bg-transparent" style={{ marginRight: 8 }}>
         <img src="/images/printer.png" alt="edit" style={{ width: 17 }} onClick={() => handlePrint('anterior')} />
         <i className="bi bi-brush" style={{ fontSize: 18, color: ' #ff8800', marginLeft: 10 }} onClick={() => openDialog("Anterioricon")}></i>
-        <img src="/images/pencil.png" alt="edit" style={{ width: 17, marginLeft: 5 }} onClick={() => openDialog("Anterior")} />
+        <img src="/images/pencil.png" alt="edit" style={{ width: 17, marginLeft: 5 }} onClick={() => openDialog("Anterior" , 0)} />
       </button>
     </div>
 

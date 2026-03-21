@@ -7,8 +7,7 @@ import { useContext, useState, useEffect } from "react";
 export default function Medicine1({ onClose, onRefresh, index }) {
   const { Medicine, getAllProduct, product, Aid, getAllTemplatesData, templateData, getAllTemplates, templates } = useContext(MainContext);
   const navigate = useNavigate();
-  const emptyRow = { DrugName: "", customDrug: "",eye: "", type: "", dose: "", duration: "", time: "", comment: "" };
-
+  const emptyRow = { DrugName: "", customDrug: "", eye: "", type: "", dose: "", duration: "", time: "", comment: "" };
   const [items, setItems] = useState([emptyRow]);
   const [source, setSource] = useState("medicine");
   useEffect(() => {
@@ -17,30 +16,38 @@ export default function Medicine1({ onClose, onRefresh, index }) {
   }, [])
 
 
- const normalizeItems = (data) => {
-  if (!data) return [emptyRow];
+  const normalizeItems = (data) => {
+    if (!data) return [emptyRow];
+    const arr = Array.isArray(data) ? data : [data];
 
-  const arr = Array.isArray(data) ? data : [data];
+    return arr.map(item => {
+      const drug = item.DrugName || item.medicine || "";
 
-  return arr.map(item => {
-    const drug = item.DrugName || item.medicine || "";
+      // prepare duration/time separation when backend sends combined string
+      let duration = item.duration || "";
+      let time = item.time || item.Intake || "";
+      if (!time && duration) {
+        const parts = duration.split(" ");
+        time = parts.pop();
+        duration = parts.join(" ");
+      }
 
-    // check if drug exists in product list
-    const isInList = product?.some(p => p.name === drug);
+      // check if drug exists in product list
+      const isInList = product?.some(p => p.name === drug);
 
-    return {
-      id: item.id || "",
-      DrugName: isInList ? drug : "Other",
-      customDrug: isInList ? "" : drug,
-      eye: item.eye || "",
-      type: item.type || "",
-      dose: item.Dose || item.dose || "",
-      duration: item.duration || "",
-      time: item.time || item.Intake || "",
-      comment: item.comment || item.message || ""
-    };
-  });
-};
+      return {
+        id: item.id || "",
+        DrugName: isInList ? drug : "Other",
+        customDrug: isInList ? "" : drug,
+        eye: item.eye || "",
+        type: item.type || "",
+        dose: item.Dose || item.dose || "",
+        duration,
+        time,
+        comment: item.comment || item.message || ""
+      };
+    });
+  };
 
 
   useEffect(() => {
@@ -53,15 +60,20 @@ export default function Medicine1({ onClose, onRefresh, index }) {
     let dataToUse = [];
 
     // ✅ If index is provided → show only that row
-    if (typeof index === "number" && Medicine[index]) {
-      dataToUse = [Medicine[index]];
+    if (index !== undefined && index !== null) {
+      const selected = Medicine[index];
+      if (selected) {
+        dataToUse = [selected];
+      }
     }
-    // ✅ If index not provided → show full array
+    // ✅ If index not provided → show full array (global mode)
     else {
-      dataToUse = Medicine;
+      // include an extra blank row so user can add new items without affecting existing ones
+      dataToUse = [Medicine];
     }
 
-    setItems(normalizeItems(dataToUse));
+    const normalized = normalizeItems(dataToUse);
+    setItems(normalized);
     setSource("medicine");
 
     setTimeout(() => {
@@ -89,7 +101,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
 
   // Check row complete
   const isRowComplete = (row) => {
-    
+
     return (
       row.DrugName &&
       row.eye &&
@@ -118,29 +130,33 @@ export default function Medicine1({ onClose, onRefresh, index }) {
 
   const handleSave = async () => {
 
-    const preparedItems = items.map(row => ({...row, DrugName: row.DrugName === "Other" ? row.customDrug : row.DrugName}));
+    // combine duration and time into single string so backend receives a unified value
+    const preparedItems = items.map(row => {
+      const drugName = row.DrugName === "Other" ? row.customDrug : row.DrugName;
+      return {
+        ...row,
+        DrugName: drugName,
+        duration: row.duration && row.time ? `${row.duration} ${row.time}` : row.duration
+      };
+    });
 
-    // remove empty rows
-    const filteredItems = preparedItems.filter(row => isRowComplete(row));
+    // in global mode we only want to send rows without an id (new rows)
+    const newItems = preparedItems.filter(row => isRowComplete(row) && !row.id);
 
-    if (filteredItems.length === 0) {
-      alert("Please enter at least one item");
+    if (newItems.length === 0) {
+      alert("Please enter at least one new medicine to save");
       return;
     }
 
     try {
-      // console.log(filteredItems)
-      const response = await postData(`patient/v1/Medicine/${Aid}`, { filteredItems });
-      console.log(response)
+      const response = await postData(`patient/v1/Medicine/${Aid}`, { filteredItems: newItems });
       const result = response.data;
-      // console.log(response)
       if (result.success) {
         alert("Bill Saved Successfully ✅");
         setItems([emptyRow]); // reset table
       } else {
         alert("Failed to save bill ❌");
       }
-
     } catch (error) {
       console.error(error);
       alert("Server Error ❌");
@@ -154,15 +170,22 @@ export default function Medicine1({ onClose, onRefresh, index }) {
     setItems([emptyRow])
   }
 
+  // synchronize items when Medicine or product list changes
+  // but respect `index` so single-row mode isn't overwritten.
   useEffect(() => {
-  if (Medicine?.length && product?.length) {
-    setItems(normalizeItems(Medicine));
-  }
-}, [Medicine, product]);
+    if (Medicine?.length && product?.length) {
+      if (index !== undefined && index !== null) {
+        const selected = Medicine[index];
+        setItems(normalizeItems(selected ? [selected] : []));
+      } else {
+        setItems(normalizeItems([Medicine]));
+      }
+    }
+  }, [Medicine, product, index]);
 
 
 
- {/* const handleEditData = async () => {
+  {/* const handleEditData = async () => {
     try {
       const medicines = items;
 
@@ -216,58 +239,70 @@ export default function Medicine1({ onClose, onRefresh, index }) {
   };
 */}
 
-const handleEditData = async () => {
-  try {
-    // ✅ convert Other → real value
-    const preparedItems = items.map(row => ({...row, DrugName: row.DrugName === "Other"? row.customDrug : row.DrugName }));
-
-    const filteredItems = preparedItems.filter(row => isRowComplete(row));
-
-    if (filteredItems.length === 0) {
-      alert("Please enter at least one item");
-      return;
-    }
-
-    console.log(filteredItems);
-
-    const result = await putData(`patient/v1/update/Medicine/${filteredItems[0]?.id}`,filteredItems[0]);
-
-    if (result.status) {
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Medicine Updated Successfully",
-        showConfirmButton: false,
-        timer: 2000
+  const handleEditData = async () => {
+    try {
+      // ✅ convert Other → real value and concat duration/time
+      const preparedItems = items.map(row => {
+        const drugName = row.DrugName === "Other" ? row.customDrug : row.DrugName;
+        return {
+          ...row,
+          DrugName: drugName,
+          duration: row.duration && row.time ? `${row.duration} ${row.time}` : row.duration
+        };
       });
-    } else {
+
+      const filteredItems = preparedItems.filter(row => isRowComplete(row));
+
+      if (filteredItems.length === 0) {
+        alert("Please enter at least one item");
+        return;
+      }
+
+      console.log(filteredItems);
+
+      const result = await putData(`patient/v1/update/Medicine/${filteredItems[0]?.id}`, filteredItems[0]);
+
+      if (result.status) {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Medicine Updated Successfully",
+          showConfirmButton: false,
+          timer: 2000
+        });
+      } else {
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Medicine Update Failed",
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+
+    } catch (error) {
+      console.error(error);
       Swal.fire({
-        position: "top-end",
         icon: "error",
-        title: "Medicine Update Failed",
-        showConfirmButton: false,
+        title: "Server Error",
         timer: 2000
       });
     }
 
-  } catch (error) {
-    console.error(error);
-    Swal.fire({
-      icon: "error",
-      title: "Server Error",
-      timer: 2000
-    });
-  }
-
-  onClose();
-  onRefresh();
-};
+    onClose();
+    onRefresh();
+  };
 
 
 
   const handleCreateTemplate = async () => {
     try {
-      const filteredItems = items.filter(row => isRowComplete(row));
+      const filteredItems = items
+        .map(row => ({
+          ...row,
+          duration: row.duration && row.time ? `${row.duration} ${row.time}` : row.duration
+        }))
+        .filter(row => isRowComplete(row));
 
       if (filteredItems.length === 0) {
         alert("Please enter at least one item");
@@ -349,43 +384,45 @@ const handleEditData = async () => {
                 {items.map((item, index) => (
 
                   <tr key={index}>
-                  <td>
-  <select
-    className="form-select"
-    value={item.DrugName}
-    onChange={(e) => {
-      const value = e.target.value;
-      handleChange(index, "DrugName", value);
+                    <td>
+                      <select
+                        className="form-select"
+                        value={item.DrugName}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          handleChange(index, "DrugName", value);
 
-      if (value !== "Other") {
-        handleChange(index, "customDrug", "");
-      }
-    }}
-  >
-    <option value="">Select Drug Name</option>
+                          if (value !== "Other") {
+                            handleChange(index, "customDrug", "");
+                          }
+                        }}
+                        disabled={index == null && item.id}
+                      >
+                        <option value="">Select Drug Name</option>
 
-    {product?.map((p) => (
-      <option key={p.id} value={p.name}>
-        {p.name}
-      </option>
-    ))}
+                        {product?.map((p) => (
+                          <option key={p.id} value={p.name}>
+                            {p.name}
+                          </option>
+                        ))}
 
-    <option value="Other">Other</option>
-  </select>
+                        <option value="Other">Other</option>
+                      </select>
 
-  {/* Show textbox ONLY when Other selected */}
-  {item.DrugName === "Other" && (
-    <input
-      type="text"
-      className="form-control mt-1"
-      placeholder="Enter Medicine Name"
-      value={item.customDrug}
-      onChange={(e) =>
-        handleChange(index, "customDrug", e.target.value)
-      }
-    />
-  )}
-</td>
+                      {/* Show textbox ONLY when Other selected */}
+                      {item.DrugName === "Other" && (
+                        <input
+                          type="text"
+                          className="form-control mt-1"
+                          placeholder="Enter Medicine Name"
+                          value={item.customDrug}
+                          onChange={(e) =>
+                            handleChange(index, "customDrug", e.target.value)
+                          }
+                          disabled={index == null && item.id}
+                        />
+                      )}
+                    </td>
 
 
                     <td>
@@ -394,6 +431,7 @@ const handleEditData = async () => {
                         value={item.eye}
                         onChange={(e) => handleChange(index, "eye", e.target.value)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
+                        disabled={index == null && item.id}
                       >
                         <option value='Select eye'>Select Eye</option>
                         <option value='Left eye'>Left Eye</option>
@@ -409,6 +447,7 @@ const handleEditData = async () => {
                         value={item.type}
                         onChange={(e) => handleChange(index, "type", e.target.value)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
+                        disabled={index == null && item.id}
                       >
                         <option value='Select Type'>Select Type</option>
                         <option value='Eye Drop'>Eye Drop</option>
@@ -420,17 +459,17 @@ const handleEditData = async () => {
                       </select>
                     </td>
 
-                    <td><input size={2} type="text" className="form-control" value={item.dose} onChange={(e) => handleChange(index, "dose", e.target.value)} onKeyDown={(e) => handleKeyDown(e, index)} /></td>
+                    <td><input size={2} type="text" className="form-control" value={item.dose} onChange={(e) => handleChange(index, "dose", e.target.value)} onKeyDown={(e) => handleKeyDown(e, index)} disabled={index == null && item.id} /></td>
 
                     <td>
                       <div style={{ display: 'flex' }}>
-                        <input size={2} style={{ width: "70px", marginRight: 5 }} type="text" className="form-control form-control-sm" value={item.duration} onChange={(e) => handleChange(index, "duration", e.target.value)} onKeyDown={(e) => handleKeyDown(e, index)} />
+                        <input size={2} style={{ width: "70px", marginRight: 5 }} type="text" className="form-control form-control-sm" value={item.duration} onChange={(e) => handleChange(index, "duration", e.target.value)} onKeyDown={(e) => handleKeyDown(e, index)} disabled={index == null && item.id} />
                         <select className="form-select selectpicker"
                           data-live-search="true"
                           value={item.time}
                           onChange={(e) => handleChange(index, "time", e.target.value)}
                           onKeyDown={(e) => handleKeyDown(e, index)}
-
+                          disabled={index == null && item.id}
                         >
                           <option value='Select Duration'>Select Duration</option>
                           <option value='Days'>Days</option>
@@ -443,7 +482,7 @@ const handleEditData = async () => {
                       </div>
                     </td>
 
-                    <td><input size={2} type="text" className="form-control" value={item.comment} onChange={(e) => handleChange(index, "comment", e.target.value)} onKeyDown={(e) => handleKeyDown(e, index)} /></td>
+                    <td><input size={2} type="text" className="form-control" value={item.comment} onChange={(e) => handleChange(index, "comment", e.target.value)} onKeyDown={(e) => handleKeyDown(e, index)} disabled={index == null && item.id} /></td>
                   </tr>
                 ))}
 
@@ -452,16 +491,18 @@ const handleEditData = async () => {
           </div>
 
           <div className="row">
-            <div className="col-lg-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <button onClick={handleSave} type="button" className="btn btn-primary">Save</button>
-            </div>
+            {index !== undefined && index !== null ? (
+              <div className="col-lg-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <button onClick={handleEditData} type="reset" className="btn btn-primary">Update</button>
+              </div>
+            ) : (
+              <div className="col-lg-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <button onClick={handleSave} type="button" className="btn btn-primary">Save</button>
+              </div>
+            )}
 
             <div className="col-lg-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <button onClick={resetData} type="button" className="btn btn-primary">Cancel</button>
-            </div>
-
-            <div className="col-lg-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <button onClick={handleEditData} type="reset" className="btn btn-primary">Edit</button>
             </div>
 
             <div className="col-lg-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

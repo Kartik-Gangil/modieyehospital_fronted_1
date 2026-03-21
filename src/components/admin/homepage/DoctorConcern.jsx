@@ -411,7 +411,7 @@ export default function DoctorConcern({ onRefresh })
 
               <th>Report Name</th>
               <th>View</th>
-              <th className="bi">Edit/Delete</th>
+              {/* <th className="bi">Edit/Delete</th> */}
             </tr>
           </thead>
           <tbody>
@@ -420,10 +420,10 @@ export default function DoctorConcern({ onRefresh })
                 <tr style={{ fontSize: '14px' }} key={i}>
                   <td>{safeValue(item.name)}</td>
                   <td><a target="blank" href={`${serverURL}/${item.path}`}>View</a></td>
-                  <td className="bi">
+                  {/* <td className="bi">
                     <i className="bi bi-pencil" style={{ fontSize: 18, marginLeft: 5, fontWeight: 'bolder', cursor: 'pointer' }}></i>
                     <i className="bi bi-trash3-fill" style={{ fontSize: 18, marginLeft: 15, fontWeight: 'bolder', cursor: 'pointer' }}></i>
-                  </td>
+                  </td> */}
                 </tr>)
             }) : (<tr>
               <td colSpan="4">No record available</td>
