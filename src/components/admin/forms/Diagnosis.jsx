@@ -123,12 +123,12 @@ export default function Diagnosis({ onClose, onRefresh, index }) {
             <div className="row">
                 <div className="col-12 col-lg-6 mb-3">
                     <div style={{ fontSize: 16, fontWeight: 'bold', margin: 10 }}>Right Eye</div>
-                    <input type="text" className="form-control" value={rightEye} onChange={(e) => setRightEye(e.target.value)} fullwidth />
+                    <input type="text" className="form-control" value={rightEye ?? ""} onChange={(e) => setRightEye(e.target.value)} fullwidth="true" />
                 </div>
 
                 <div className="col-12 col-lg-6 mb-3">
                     <div style={{ fontSize: 16, fontWeight: 'bold', margin: 10 }}>Left Eye</div>
-                    <div><input type="text" className="form-control" value={leftEye} onChange={(e) => setLeftEye(e.target.value)} /></div>
+                    <div><input type="text" className="form-control" value={leftEye ?? ""} onChange={(e) => setLeftEye(e.target.value)} /></div>
                 </div>
             </div>
 

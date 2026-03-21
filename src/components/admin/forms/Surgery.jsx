@@ -97,7 +97,7 @@ export default function Surgery({ index }) {
 
 
     try {
-      console.log(filteredItems)
+      // console.log(filteredItems)
       const response = await postData(`patient/v1/Surgery/${Aid}`, { filteredItems });
 
       const result = response.data;

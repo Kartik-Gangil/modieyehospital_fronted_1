@@ -110,48 +110,48 @@ export default function DashBoard()
           <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
               <span className="input-group-text">Appointment No:</span>
-              <input type="text" className="form-control" disabled value={Aid} />
+              <input type="text" className="form-control" disabled value={Aid || ""} />
             </div>
           </div>
           <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
               <span className="input-group-text">MRD No.:</span>
-              <input type="text" className="form-control" disabled value={patientData.id} />
+              <input type="text" className="form-control" disabled value={patientData.id || ""} />
             </div>
           </div>
 
           <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
               <span className="input-group-text">Name</span>
-              <input type="text" className="form-control" disabled value={patientData.FullName} />
+              <input type="text" className="form-control" disabled value={patientData.FullName || ""} />
             </div>
           </div>
 
-          {/* <div className="col-xs-12 col-lg-2">
+          <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
               <span className="input-group-text">Doctor</span>
-              <input type="text" className="form-control" disabled value={DoctorDetail.FullName} />
+              <input type="text" className="form-control" disabled value={DoctorDetail.FullName || ""} />
             </div>
-          </div> */}
+          </div>
 
           <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
               <span className="input-group-text">Age</span>
-              <input type="text" className="form-control" disabled value={patientData.Age} />
+              <input type="text" className="form-control" disabled value={patientData.Age || ""} />
             </div>
           </div>
 
           <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
               <span className="input-group-text">DOB:</span>
-              <input type="text" className="form-control" disabled value={patientData.Dob} />
+              <input type="text" className="form-control" disabled value={patientData.Dob || ""} />
             </div>
           </div>
 
           <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
               <span className="input-group-text">Reffered By:</span>
-              <input type="text" className="form-control" disabled />
+              <input type="text" className="form-control" value={patientData.Reffered_by || "N/A"} disabled />
             </div>
           </div>
 
@@ -165,17 +165,17 @@ export default function DashBoard()
           <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
               <span className="input-group-text">Address</span>
-              <input type="text" className="form-control" disabled value={patientData.Address} />
+              <input type="text" className="form-control" disabled value={patientData.Address || ""} />
             </div>
           </div>
 
 
-          {/* <div className="col-xs-12 col-lg-2">
+          <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
               <span className="input-group-text">Last Visit Date:</span>
               <input type="text" className="form-control" disabled value={patientData.Latest_Apt_Date} />
             </div>
-          </div> */}
+          </div>
 
           <div className="col-xs-12 col-lg-2">
             <div className="input-group input-group-sm">
