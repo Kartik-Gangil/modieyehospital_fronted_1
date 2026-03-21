@@ -3,22 +3,43 @@ import Header from "../../admin/homepage/Header";
 import { postData } from "../../../services/FetchNodeAdminServices";
 import Swal from "sweetalert2";
 import MainContext from "../../../context/MainContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function AddProduct() 
 {
+     const location=useLocation();
+    const editData = location?.state?.product;
+    const mode = location?.state?.show || "";
 
     const { getAllCompany, supplier } = useContext(MainContext);
 
     useEffect(() => {
         getAllCompany()
     }, [])
+    
     const navigate = useNavigate();
 
     const [supplierId, setSupplierId] = useState('');
     const [product, setProduct] = useState('');
     const [packing, setPacking] = useState('');
     const [company, setCompany] = useState('');
+    const [tablet,setTablet]=useState('');
+
+
+      useEffect(() => {
+         if (!editData || editData.length === 0) return;
+
+         console.log("ddd",editData)
+
+        setSupplierId(editData[0]?.supplier || '');
+        setProduct(editData[0]?.name || '');
+        setPacking(editData[0]?.packing || '');
+        setCompany(editData[0]?.company || '');
+        setTablet(editData[0]?.tablet || '');
+        setMRP(editData[0]?.mrp || '');
+        setPRate(editData[0]?.prate || '');
+       
+    }, [editData])
 
     // const [status, setStataus] = useState('');
    //  const [type, setType] = useState('');
@@ -87,6 +108,9 @@ export default function AddProduct()
        // formData.append('cost', cost);
        // formData.append('rateC', rateC);
       //  formData.append('neg', neg);
+
+      formData.append('tablet',tablet);
+
         const formDataObj = {};
 
         formData.forEach((value, key) => {
@@ -153,6 +177,8 @@ export default function AddProduct()
      //   setCost('');
       //  setRateC('');
       //  setNeg('');
+
+      setTablet('')
 
     }
 
@@ -331,14 +357,19 @@ export default function AddProduct()
                         <input type="text" value={local} onChange={(event) => setLocal(event.target.value)} className="form-control" placeholder="Enter here..." />
                     </div>  */}
 
-                     <div className="col-lg-6 col-xs-12 mb-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                     <div className="col-lg-4 col-xs-12 mb-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <label className="form-label fw-bold me-2 mb-0">M.R.P.: </label>
                         <input type="text" value={mrp} onChange={(event) => setMRP(event.target.value)} className="form-control" placeholder="Enter M.R.P...." />
                     </div>
 
-                    <div className="col-lg-6 col-xs-12 mb-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div className="col-lg-4 col-xs-12 mb-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <label className="form-label fw-bold me-2 mb-0" style={{ whiteSpace: 'nowrap' }}>P Rate: </label>
                         <input type="text" value={prate} onChange={(event) => setPRate(event.target.value)} className="form-control" placeholder="Enter rate..." />
+                    </div>
+
+                    <div className="col-lg-4 col-xs-12 mb-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <label className="form-label fw-bold me-2 mb-0">Tablet Per Pata </label>
+                        <input type="text" value={tablet} onChange={(event) => setTablet(event.target.value)} className="form-control" placeholder="Enter here..." />
                     </div>
                 </div>
 
@@ -420,6 +451,18 @@ export default function AddProduct()
                     </div>  
                 </div>  */}
 
+
+                 {mode == 'edit' ? <div className="row">
+          <div className="col-lg-6" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button type="button" className="btn btn-primary">Update</button>
+          </div>
+
+          <div className="col-lg-6" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button type="button" className="btn btn-primary">Delete</button>
+          </div>
+
+        </div> :
+
                 <div className="row">
                     <div className="col-lg-6" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <button onClick={handleSubmitData} type="button" className="btn btn-primary">Save</button>
@@ -429,9 +472,9 @@ export default function AddProduct()
                         <button onClick={resetData} type="button" className="btn btn-primary">Cancel</button>
                     </div>
 
-                </div>
+                </div> }
 
-
+                 
             </div>
         </div>
 

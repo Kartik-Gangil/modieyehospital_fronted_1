@@ -15,7 +15,8 @@ import "../homepage/MainPrint.css"
 
 
 
-export default function DoctorConcern({ onRefresh }) {
+export default function DoctorConcern({ onRefresh }) 
+{
   const [showDialog, setShowDialog] = useState(false);                    //showDialog or showmodal ek h
   const [selectedID, setSelectedID] = useState(null);                    //showDialog or showmodal ek h
   const [selectedIndex, setSelectedIndex] = useState(null);                    //showDialog or showmodal ek h
@@ -99,6 +100,16 @@ export default function DoctorConcern({ onRefresh }) {
     }
     return null;
   };
+
+
+  const safeValue = (val) => {
+  if (val === undefined || val === null || val === "undefined" || val === "null") 
+  {
+    return "";
+  }
+  
+  return val;
+};
 
 
 
@@ -230,10 +241,10 @@ export default function DoctorConcern({ onRefresh }) {
               histroy.map((item, i) => {
                 return (<tr key={i} style={{ height: "20px", fontSize: '14px' }}>
                   <td className="p-1">{new Date(item.created_at).toLocaleDateString()}</td>
-                  <td className="p-1">{item.Systemic_illness}</td>
-                  <td className="p-1">{item.Treatment_Histroy}</td>
-                  <td className="p-1">{item.Dite_Histroy}</td>
-                  <td className="p-1">{item.Family_Histroy}</td>
+                  <td className="p-1">{safeValue(item.Systemic_illness)}</td>
+                  <td className="p-1">{safeValue(item.Treatment_Histroy)}</td>
+                  <td className="p-1">{safeValue(item.Dite_Histroy)}</td>
+                  <td className="p-1">{safeValue(item.Family_Histroy)}</td>
                   <td className="p-1 bi">
                     <i className="bi bi-pencil" onClick={() => openDialog("History", item.id , i)} style={{ fontSize: 18, marginLeft: 5, fontWeight: 'bolder', cursor: 'pointer' }}></i>
                     <i className="bi bi-trash3-fill" onClick={() => {deleteHistroy(item.id).then(() => onRefresh())}} style={{ fontSize: 18, marginLeft: 15, fontWeight: 'bolder', cursor: 'pointer' }}></i>
@@ -321,10 +332,10 @@ export default function DoctorConcern({ onRefresh }) {
               diagnosisList.map((diagnosis, i) => {
                 return (<tr key={i} style={{ fontSize: '14px' }}>
                   <td>{new Date(diagnosis.created_at).toLocaleDateString()}</td>
-                  <td>{diagnosis.R_eye}</td>
-                  <td>{diagnosis.L_eye}</td>
-                  <td>{diagnosis.Systemic}</td>
-                  <td>{diagnosis.Others}</td>
+                  <td>{safeValue(diagnosis.R_eye)}</td>
+                  <td>{safeValue(diagnosis.L_eye)}</td>
+                  <td>{safeValue(diagnosis.Systemic)}</td>
+                  <td>{safeValue(diagnosis.Others)}</td>
                   <td className="p-1 bi">
                     <i className="bi bi-pencil" onClick={() => openDialog("Diagnosis", diagnosis.id, i)} style={{ fontSize: 18, marginLeft: 5, fontWeight: 'bolder', cursor: 'pointer' }}></i>
                     <i className="bi bi-trash3-fill" onClick={() => {deleteDiagnosis(diagnosis.id).then(() => onRefresh())}} style={{ fontSize: 18, marginLeft: 15, fontWeight: 'bolder', cursor: 'pointer' }}></i>
@@ -407,7 +418,7 @@ export default function DoctorConcern({ onRefresh }) {
             {PatientReports?.length > 0 ? PatientReports.map((item, i) => {
               return (
                 <tr style={{ fontSize: '14px' }} key={i}>
-                  <td>{item.name}</td>
+                  <td>{safeValue(item.name)}</td>
                   <td><a target="blank" href={`${serverURL}/${item.path}`}>View</a></td>
                   <td className="bi">
                     <i className="bi bi-pencil" style={{ fontSize: 18, marginLeft: 5, fontWeight: 'bolder', cursor: 'pointer' }}></i>

@@ -2,14 +2,22 @@ import { useContext } from "react";
 import Header from "../../admin/homepage/Header";
 import MainContext from "../../../context/MainContext";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ShowCompany()
 {
+  const navigate=useNavigate();
+
     const {supplier, getAllCompany } = useContext(MainContext);
 
     useEffect(() => {
         getAllCompany();
       }, [])
+
+
+      const handleNavigateData=(item)=>{
+        navigate('/addcompany', { state: { product: [item], show:'edit' } });
+      }
 
     
     return(<div>
@@ -29,6 +37,7 @@ export default function ShowCompany()
                 <th className="text-center">Seq</th>
                 <th className="text-center">Suppler Id</th>
                 <th className="text-center">Company Name </th>
+                <th className="text-center">Edit/Delete</th>
               </tr>
             </thead>
         <tbody>
@@ -41,9 +50,9 @@ export default function ShowCompany()
                   <td className="text-center">{i + 1}</td>
                   <td className="text-center">{item.id}</td>
                   <td className="text-center">{item.name}</td>
-                 {/* <td className="text-center">
-                    <button onClick={openDailog} className="bg-warning px-3 text-uppercase text-white rounded border border-0">Update</button>
-                  </td>  */}
+                  <td className="text-center">
+                    <button onClick={()=>handleNavigateData(item)} className="bg-warning px-3 text-uppercase text-white rounded border border-0">Update</button>
+                  </td>  
                 </tr>
                 )
               }

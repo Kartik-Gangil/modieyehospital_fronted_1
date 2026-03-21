@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../../admin/homepage/Header";
 import { postData } from "../../../services/FetchNodeAdminServices";
 import Swal from "sweetalert2";
+import { useLocation } from "react-router-dom";
 
 export default function AddCompany()
  {
+    const location=useLocation();
+    const editData = location?.state?.product;
+    const mode = location?.state?.show || "";
    
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
@@ -12,6 +16,22 @@ export default function AddCompany()
     const [phone, setPhone] = useState('');
     const [gstno, setGST] = useState('');
     const [dlno, setDL] = useState('');
+
+
+    useEffect(()=>{
+         if (!editData || editData.length === 0) return;
+
+         console.log("ddd",editData)
+
+        setName(editData[0]?.name || '');
+        setAddress(editData[0]?.address || '');
+        setEmail(editData[0]?.email || '');
+        setPhone(editData[0]?.phone || '');
+        setGST(editData[0]?.gstno || '');
+        setDL(editData[0]?.dlno || '');
+
+    },[editData])
+
 
     const handleSumbitData = async () => {
         var formData = new FormData();
@@ -62,6 +82,35 @@ export default function AddCompany()
         setDL('');
     }
 
+
+    
+  /**********Delete Data**************************** */
+
+  const handleDelete = async () => {
+
+    if (!window.confirm("Delete this ?")) return;
+    console.log(editData)
+    try {
+      const res = await deleteData(`medical/api/delete/purchaseBill/${editData[0].id}`);
+      console.log(res)
+      if (res.data.success) {
+        alert("Deleted ✅");
+        navigate("/showbill"); // refresh table
+      } else {
+        alert("Delete failed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server error");
+    }
+  };
+
+
+
+  /************************************************ */
+
+
+
     return (<div>
 
         <div>
@@ -106,6 +155,17 @@ export default function AddCompany()
                 </div>
 
 
+                 {mode == 'edit' ? <div className="row">
+          <div className="col-lg-6" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button type="button" className="btn btn-primary">Update</button>
+          </div>
+
+          <div className="col-lg-6" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button type="button" className="btn btn-primary">Delete</button>
+          </div>
+
+        </div> :
+
                 <div className="row m-2">
                     <div className="col-lg-6 col-sx-12 mb-1 d-flex justify-content-center align-items-center">
                         <button onClick={handleSumbitData} type="button" className="btn btn-primary">Submit</button>
@@ -114,8 +174,7 @@ export default function AddCompany()
                     <div className="col-lg-6 col-sx-12 mb-1 d-flex justify-content-center align-items-center">
                         <button onClick={resetData} type="button" className="btn btn-primary">Cancel</button>
                     </div>
-                </div>
-
+                </div> }
 
 
             </div>

@@ -13,7 +13,8 @@ import Surgery from '../forms/Surgery';
 import "./MainPrint.css";
 
 
-export default function PatientHistory({ onRefresh }) {
+export default function PatientHistory({ onRefresh }) 
+{
   const [showDialog, setShowDialog] = useState(false);                    //showDialog or showmodal ek h
   const [modalPage, setModalPage] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -122,6 +123,16 @@ export default function PatientHistory({ onRefresh }) {
   };
 
 
+    const safeValue = (val) => {
+  if (val === undefined || val === null || val === "undefined" || val === "null") 
+  {
+    return "";
+  }
+  
+  return val;
+};
+
+
   {/**********Print Function************ */ }
 
   const handlePrint = (sectionId) => {
@@ -216,12 +227,12 @@ export default function PatientHistory({ onRefresh }) {
             {Medicine.length > 0 ? Medicine.map((item, i) => {
               return (
                 <tr key={i}>
-                  <td>{item.medicine}</td>
-                  <td>{item.eye}</td>
-                  <td>{item.type}</td>
-                  <td>{item.Dose}</td>
-                  <td>{item.duration}</td>
-                  <td>{item.message}</td>
+                  <td>{safeValue(item.medicine)}</td>
+                  <td>{safeValue(item.eye)}</td>
+                  <td>{safeValue(item.type)}</td>
+                  <td>{safeValue(item.Dose)}</td>
+                  <td>{safeValue(item.duration)}</td>
+                  <td>{safeValue(item.message)}</td>
                   <td>{new Date(item.Date).toLocaleDateString()}</td>
                   <td className='bi'>
                     <i className="bi bi-pencil" onClick={() => openDialog("Medicines", i)} style={{ fontSize: 18, marginLeft: 5, fontWeight: 'bolder', cursor: 'pointer' }}></i>
@@ -292,48 +303,48 @@ export default function PatientHistory({ onRefresh }) {
                 <>
                   <tr>
                     <td>Distance unaided</td>
-                    <td>{activeRecord.R_Distance_unaided}</td>
-                    <td>{activeRecord.L_Distance_unaided}</td>
+                    <td>{ safeValue(activeRecord.R_Distance_unaided) }</td>
+                    <td>{ safeValue(activeRecord.L_Distance_unaided) }</td>
                   </tr>
                   <tr>
                     <td>Distance With Pin Hole</td>
-                    <td>{activeRecord.R_Distance_With_Pin_Hole}</td>
-                    <td>{activeRecord.L_Distance_With_Pin_Hole}</td>
+                    <td>{ safeValue(activeRecord.R_Distance_With_Pin_Hole) }</td>
+                    <td>{ safeValue(activeRecord.L_Distance_With_Pin_Hole) }</td>
                   </tr>
                   <tr>
                     <td>Distance With CT</td>
-                    <td>{activeRecord.R_Distance_With_CT}</td>
-                    <td>{activeRecord.L_Distance_With_CT}</td>
+                    <td>{ safeValue(activeRecord.R_Distance_With_CT) }</td>
+                    <td>{ safeValue(activeRecord.L_Distance_With_CT) }</td>
                   </tr>
                   <tr>
                     <td>Distance With PMT</td>
-                    <td>{activeRecord.R_Distance_With_PMT}</td>
-                    <td>{activeRecord.L_Distance_With_PMT}</td>
+                    <td>{ safeValue(activeRecord.R_Distance_With_PMT) }</td>
+                    <td>{ safeValue(activeRecord.L_Distance_With_PMT) }</td>
                   </tr>
                   <tr>
                     <td>Distance With Previous Glasses</td>
-                    <td>{activeRecord.R_Distance_with_previous_glasses}</td>
-                    <td>{activeRecord.L_Distance_with_previous_glasses}</td>
+                    <td>{ safeValue(activeRecord.R_Distance_with_previous_glasses) }</td>
+                    <td>{ safeValue(activeRecord.L_Distance_with_previous_glasses) }</td>
                   </tr>
                   <tr>
                     <td>Distance With Current Subjective</td>
-                    <td>{activeRecord.R_Distance_with_current_subjective}</td>
-                    <td>{activeRecord.L_Distance_with_current_subjective}</td>
+                    <td>{ safeValue(activeRecord.R_Distance_with_current_subjective) }</td>
+                    <td>{ safeValue(activeRecord.L_Distance_with_current_subjective) }</td>
                   </tr>
                   <tr>
                     <td>Near Unaided</td>
-                    <td>{activeRecord.R_Near_unaided}</td>
-                    <td>{activeRecord.L_Near_unaided}</td>
+                    <td>{ safeValue(activeRecord.R_Near_unaided) }</td>
+                    <td>{ safeValue(activeRecord.L_Near_unaided) }</td>
                   </tr>
                   <tr>
                     <td>Near With Previous Glasses</td>
-                    <td>{activeRecord.R_Near_with_previous_glasses}</td>
-                    <td>{activeRecord.L_Near_with_previous_glasses}</td>
+                    <td>{ safeValue(activeRecord.R_Near_with_previous_glasses) }</td>
+                    <td>{ safeValue(activeRecord.L_Near_with_previous_glasses) }</td>
                   </tr>
                   <tr>
                     <td>Near With Current Subjective</td>
-                    <td>{activeRecord.R_Near_with_current_subjective}</td>
-                    <td>{activeRecord.L_Near_with_current_subjective}</td>
+                    <td>{ safeValue(activeRecord.R_Near_with_current_subjective) }</td>
+                    <td>{ safeValue(activeRecord.L_Near_with_current_subjective) }</td>
                   </tr>
 
                 </>
@@ -416,50 +427,34 @@ export default function PatientHistory({ onRefresh }) {
                         <br />
                         Glass: {record.Glass_Type}
                         <br />
-                        <i
-                          className="bi bi-pencil"
-                          onClick={() => {openDialog("Refraction", record.id).then(() => onRefresh())}}
-                          style={{
-                            fontSize: 18,
-                            marginLeft: 5,
-                            cursor: "pointer",
-                          }}
-                        ></i>
-                        <i
-                          className="bi bi-trash3-fill"
-                          onClick={() => deleteRefraction(record.id)}
-                          style={{
-                            fontSize: 18,
-                            marginLeft: 15,
-                            cursor: "pointer",
-                          }}
-                        ></i>
+                        <i className="bi bi-pencil" onClick={() => {openDialog("Refraction", record.id).then(() => onRefresh())}} style={{fontSize: 18,marginLeft: 5,cursor: "pointer"}}></i>
+                        <i className="bi bi-trash3-fill"  onClick={() => deleteRefraction(record.id).then(() => onRefresh())} style={{fontSize: 18,marginLeft: 15,cursor: "pointer"}}></i>
                       </td>
 
                       <td>Distance</td>
-                      <td>{record.R_D_SPH}</td>
-                      <td>{record.R_D_CYL}</td>
-                      <td>{record.R_D_AXIS}</td>
-                      <td>{record.R_D_VA}</td>
+                      <td>{ safeValue(record.R_D_SPH) }</td>
+                      <td>{ safeValue(record.R_D_CYL) }</td>
+                      <td>{ safeValue(record.R_D_AXIS) }</td>
+                      <td>{ safeValue(record.R_D_VA) }</td>
 
-                      <td>{record.L_D_SPH}</td>
-                      <td>{record.L_D_CYL}</td>
-                      <td>{record.L_D_AXIS}</td>
-                      <td>{record.L_D_VA}</td>
+                      <td>{ safeValue(record.L_D_SPH) }</td>
+                      <td>{ safeValue(record.L_D_CYL) }</td>
+                      <td>{ safeValue(record.L_D_AXIS) }</td>
+                      <td>{ safeValue(record.L_D_VA) }</td>
                     </tr>
 
                     {/* NEAR ROW */}
                     <tr className="border border-dark">
                       <td>Near</td>
-                      <td>{record.R_N_SPH}</td>
-                      <td>{record.R_N_CYL}</td>
-                      <td>{record.R_N_AXIS}</td>
-                      <td>{record.R_N_VA}</td>
+                      <td>{ safeValue(record.R_N_SPH) }</td>
+                      <td>{ safeValue(record.R_N_CYL) }</td>
+                      <td>{ safeValue(record.R_N_AXIS) }</td>
+                      <td>{ safeValue(record.R_N_VA) }</td>
 
-                      <td>{record.L_N_SPH}</td>
-                      <td>{record.L_N_CYL}</td>
-                      <td>{record.L_N_AXIS}</td>
-                      <td>{record.L_N_VA}</td>
+                      <td>{ safeValue(record.L_N_SPH) }</td>
+                      <td>{ safeValue(record.L_N_CYL) }</td>
+                      <td>{ safeValue(record.L_N_AXIS) }</td>
+                      <td>{ safeValue(record.L_N_VA) }</td>
                     </tr>
                   </React.Fragment>
                 ))
@@ -507,9 +502,9 @@ export default function PatientHistory({ onRefresh }) {
             {surgery.length > 0 ? surgery.map((item, i) => {
               return (
                 <tr key={i}>
-                  <td>{item.name}</td>
-                  <td>{item.eye}</td>
-                  <td>{item.message}</td>
+                  <td>{ safeValue(item.name) }</td>
+                  <td>{ safeValue(item.eye) }</td>
+                  <td>{ safeValue(item.message) }</td>
                   <td>{new Date(item.Date).toLocaleDateString()}</td>
                   <td className='bi'>
                     <i className="bi bi-pencil" onClick={() => openDialog("Surgery", i)} style={{ fontSize: 18, marginLeft: 5, fontWeight: 'bolder', cursor: 'pointer' }}></i>

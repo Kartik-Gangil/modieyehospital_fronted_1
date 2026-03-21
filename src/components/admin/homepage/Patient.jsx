@@ -14,7 +14,8 @@ import "../homepage/MainPrint.css";
 
 
 
-export default function Patient({ onRefresh }) {
+export default function Patient({ onRefresh }) 
+{
   const [showDialog, setShowDialog] = useState(false);                    //showDialog or showmodal ek h
   const [modalPage, setModalPage] = useState("");
   const { treatment, anterior, posterior, Advise, deleteTreatment, deleteAdvise, deleteAnterior, deletePosterior } = useContext(MainContext);
@@ -96,6 +97,17 @@ export default function Patient({ onRefresh }) {
   };
 
 
+
+   const safeValue = (val) => {
+  if (val === undefined || val === null || val === "undefined" || val === "null") 
+  {
+    return "";
+  }
+  
+  return val;
+};
+
+
   {/**********Print Function************ */ }
 
   const handlePrint = (sectionId) => {
@@ -152,7 +164,7 @@ export default function Patient({ onRefresh }) {
 
       <div className="d-flex justify-content-between align-items-center w-100 mb-2 px-3" style={{ background: "#f2b4b4ff", height: "27px" }} >
 
-        <h3 className="fs-6 fw-bold m-0">Treatment</h3>
+        <h3 className="fs-6 fw-bold m-0">Investigation</h3>
         <button className="btn p-0 border-0 bg-transparent" style={{ marginRight: 8 }}>
           <img src="/images/printer.png" alt="edit" style={{ width: 17 }} onClick={() => handlePrint('treatment')} />
           <img src="/images/pencil.png" alt="edit" style={{ width: 17, marginLeft: 10 }} onClick={() => openDialog("Treatment")} />
@@ -176,8 +188,8 @@ export default function Patient({ onRefresh }) {
               treatment.map((item, i) => {
                 return (<tr key={i} style={{ fontSize: '14px' }}>
                   <td>{new Date(item.Date).toLocaleDateString()}</td>
-                  <td>{item.type}</td>
-                  <td>{item.message}</td>
+                  <td>{ safeValue(item.type) }</td>
+                  <td>{ safeValue(item.message) }</td>
                   <td className="bi">
                     <i className="bi bi-pencil" onClick={() => openDialog("Treatment", item.id)} style={{ fontSize: 18, marginLeft: 5, fontWeight: 'bolder', cursor: 'pointer' }}></i>
                     <i className="bi bi-trash3-fill" onClick={() =>{ deleteTreatment(item.id).then(() => onRefresh())}} style={{ fontSize: 18, marginLeft: 15, fontWeight: 'bolder', cursor: 'pointer' }}></i>
@@ -219,8 +231,8 @@ export default function Patient({ onRefresh }) {
               Advise.map((item, i) => {
                 return (<tr key={i} style={{ fontSize: '14px' }}>
                   <td>{new Date(item.Date).toLocaleDateString()}</td>
-                  <td>{item.type}</td>
-                  <td>{item.message}</td>
+                  <td>{ safeValue(item.type) }</td>
+                  <td>{ safeValue(item.message) }</td>
                   <td className="bi">
                     <i className="bi bi-pencil" onClick={() => openDialog("Advice", item.id)} style={{ fontSize: 18, marginLeft: 5, fontWeight: 'bolder', cursor: 'pointer' }}></i>
                     <i className="bi bi-trash3-fill" onClick={() => {deleteAdvise(item.id).then(() => onRefresh())}} style={{ fontSize: 18, marginLeft: 15, fontWeight: 'bolder', cursor: 'pointer' }}></i>
@@ -306,24 +318,24 @@ export default function Patient({ onRefresh }) {
             {activeRecord ? (
               <tr >
                 {/* <td>{new Date(item.created_at).toLocaleDateString()}</td> */}
-                <td>{activeRecord.R_Intraocular_pressure_NCT}</td>
-                <td>{activeRecord.R_Intraocular_pressure_Tonopen}</td>
-                <td>{activeRecord.R_Intraocular_pressure_AT}</td>
-                <td>{activeRecord.R_Eyelids}</td>
-                <td>{activeRecord.R_Eyelashes}</td>
-                <td>{activeRecord.R_Orbit}</td>
-                <td>{activeRecord.R_Extraocular_movements}</td>
-                <td>{activeRecord.R_Eye_position}</td>
-                <td>{activeRecord.R_Sclera_episclera}</td>
-                <td>{activeRecord.R_Conjunctiva}</td>
-                <td>{activeRecord.R_Cornea}</td>
-                <td>{activeRecord.R_Anterior_chamber}</td>
-                <td>{activeRecord.R_Angles}</td>
-                <td>{activeRecord.R_Iris_pupil}</td>
-                <td>{activeRecord.R_Lens}</td>
-                <td>{activeRecord.R_Lacrimal_syringing}</td>
-                <td>{activeRecord.R_Gonioscopy}</td>
-                <td>{activeRecord.R_Others}</td>
+                <td>{ safeValue(activeRecord.R_Intraocular_pressure_NCT) }</td>
+                <td>{ safeValue(activeRecord.R_Intraocular_pressure_Tonopen) }</td>
+                <td>{ safeValue(activeRecord.R_Intraocular_pressure_AT) }</td>
+                <td>{ safeValue(activeRecord.R_Eyelids) }</td>
+                <td>{ safeValue(activeRecord.R_Eyelashes) }</td>
+                <td>{ safeValue(activeRecord.R_Orbit) }</td>
+                <td>{ safeValue(activeRecord.R_Extraocular_movements) }</td>
+                <td>{ safeValue(activeRecord.R_Eye_position) }</td>
+                <td>{ safeValue(activeRecord.R_Sclera_episclera) }</td>
+                <td>{ safeValue(activeRecord.R_Conjunctiva) }</td>
+                <td>{ safeValue(activeRecord.R_Cornea) }</td>
+                <td>{ safeValue(activeRecord.R_Anterior_chamber) }</td>
+                <td>{ safeValue(activeRecord.R_Angles) }</td>
+                <td>{ safeValue(activeRecord.R_Iris_pupil) }</td>
+                <td>{ safeValue(activeRecord.R_Lens) }</td>
+                <td>{ safeValue(activeRecord.R_Lacrimal_syringing) }</td>
+                <td>{ safeValue(activeRecord.R_Gonioscopy) }</td>
+                <td>{ safeValue(activeRecord.R_Others) }</td>
 
               
               </tr>)
@@ -371,24 +383,24 @@ export default function Patient({ onRefresh }) {
             {activeRecord ? (
               <tr>
 
-                <td>{activeRecord.L_Intraocular_pressure_NCT}</td>
-                <td>{activeRecord.L_Intraocular_pressure_Tonopen}</td>
-                <td>{activeRecord.L_Intraocular_pressure_AT}</td>
-                <td>{activeRecord.L_Eyelids}</td>
-                <td>{activeRecord.L_Eyelashes}</td>
-                <td>{activeRecord.L_Orbit}</td>
-                <td>{activeRecord.L_Extraocular_movements}</td>
-                <td>{activeRecord.L_Eye_position}</td>
-                <td>{activeRecord.L_Sclera_episclera}</td>
-                <td>{activeRecord.L_Conjunctiva}</td>
-                <td>{activeRecord.L_Cornea}</td>
-                <td>{activeRecord.L_Anterior_chamber}</td>
-                <td>{activeRecord.L_Angles}</td>
-                <td>{activeRecord.L_Iris_pupil}</td>
-                <td>{activeRecord.L_Lens}</td>
-                <td>{activeRecord.L_Lacrimal_syringing}</td>
-                <td>{activeRecord.L_Gonioscopy}</td>
-                <td>{activeRecord.L_Others}</td>
+                <td>{ safeValue(activeRecord.L_Intraocular_pressure_NCT) }</td>
+                <td>{ safeValue(activeRecord.L_Intraocular_pressure_Tonopen) }</td>
+                <td>{ safeValue(activeRecord.L_Intraocular_pressure_AT) }</td>
+                <td>{ safeValue(activeRecord.L_Eyelids) }</td>
+                <td>{ safeValue(activeRecord.L_Eyelashes) }</td>
+                <td>{ safeValue(activeRecord.L_Orbit) }</td>
+                <td>{ safeValue(activeRecord.L_Extraocular_movements) }</td>
+                <td>{ safeValue(activeRecord.L_Eye_position) }</td>
+                <td>{ safeValue(activeRecord.L_Sclera_episclera) }</td>
+                <td>{ safeValue(activeRecord.L_Conjunctiva) }</td>
+                <td>{ safeValue(activeRecord.L_Cornea) }</td>
+                <td>{ safeValue(activeRecord.L_Anterior_chamber) }</td>
+                <td>{ safeValue(activeRecord.L_Angles) }</td>
+                <td>{ safeValue(activeRecord.L_Iris_pupil) }</td>
+                <td>{ safeValue(activeRecord.L_Lens) }</td>
+                <td>{ safeValue(activeRecord.L_Lacrimal_syringing) }</td>
+                <td>{ safeValue(activeRecord.L_Gonioscopy) }</td>
+                <td>{ safeValue(activeRecord.L_Others) }</td>
 
               </tr>)
 
@@ -450,20 +462,20 @@ export default function Patient({ onRefresh }) {
               return (
                 <tr key={i} className="border border-dark">
                   <td>{new Date(item.created_at).toLocaleDateString()}</td>
-                  <td>{item.R_Media}</td>
-                  <td>{item.R_Vitreous}</td>
-                  <td>{item.R_Retina}</td>
-                  <td>{item.R_Optic_nerve_head}</td>
-                  <td>{item.R_Choroid}</td>
-                  <td>{item.R_Macula}</td>
-                  <td>{item.R_Others}</td>
-                  <td>{item.L_Media}</td>
-                  <td>{item.L_Vitreous}</td>
-                  <td>{item.L_Macula}</td>
-                  <td>{item.L_Retina}</td>
-                  <td>{item.L_Optic_nerve_head}</td>
-                  <td>{item.L_Choroid}</td>
-                  <td>{item.L_Others}</td>
+                  <td>{ safeValue(item.R_Media) }</td>
+                  <td>{ safeValue(item.R_Vitreous) }</td>
+                  <td>{ safeValue(item.R_Retina) }</td>
+                  <td>{ safeValue(item.R_Optic_nerve_head) }</td>
+                  <td>{ safeValue(item.R_Choroid) }</td>
+                  <td>{ safeValue(item.R_Macula) }</td>
+                  <td>{ safeValue(item.R_Others) }</td>
+                  <td>{ safeValue(item.L_Media) }</td>
+                  <td>{ safeValue(item.L_Vitreous) }</td>
+                  <td>{ safeValue(item.L_Macula) }</td>
+                  <td>{ safeValue(item.L_Retina) }</td>
+                  <td>{ safeValue(item.L_Optic_nerve_head) }</td>
+                  <td>{ safeValue(item.L_Choroid)}</td>
+                  <td>{ safeValue(item.L_Others) }</td>
 
                   <td className="bi">
                     <i className="bi bi-pencil" onClick={()=>openDialog("Posterior" , i)} style={{ fontSize: 18, marginLeft: 5, fontWeight: 'bolder', cursor: 'pointer' }}></i>
