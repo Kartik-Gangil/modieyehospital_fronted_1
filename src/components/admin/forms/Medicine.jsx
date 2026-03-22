@@ -14,7 +14,6 @@ export default function Medicine({ onClose, onRefresh }) {
     const { Medicine, P_id, Aid, getAllTemplates, templates, getAllTemplatesData, templateData } = useContext(MainContext)
     const [id, setid] = useState()
     const [name, setName] = useState();
-    console.log(templateData)
     useEffect(() => {
         setDrug(Medicine[0]?.medicine)
         setDays(Medicine[0]?.Days)

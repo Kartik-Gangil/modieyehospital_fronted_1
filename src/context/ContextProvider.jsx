@@ -286,9 +286,10 @@ const ContextProvider = ({ children }) => {
           Array.isArray(apt?.Medicine)
             ? apt.Medicine.map(med => ({
               id: med?.id ?? "",
-              medicine: med?.medicine ?? "",
+              DrugName: med?.medicine ?? "",
+              customDrug:med?.customDrug ?? "",
               duration: med?.Duration ?? "",
-              Dose: med?.Dose ?? "",
+              dose: med?.Dose ?? "",
               eye: med?.eye ?? "",
               type: med?.type ?? "",
               Intake: med?.Intake ?? "",
@@ -583,15 +584,17 @@ const ContextProvider = ({ children }) => {
     try {
       const result = await getData('medical/api/getTemplates')
       setTemplates(result)
+      // console.log(result)
     } catch (error) {
       console.log(error)
     }
   }
-
+  
   const getAllTemplatesData = async (id) => {
     try {
       const result = await getData(`medical/api/getTemplatesData/${id}`)
       setTemplatesData(result)
+      console.log(result)
     } catch (error) {
       console.log(error)
     }
