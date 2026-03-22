@@ -4,12 +4,16 @@ import { postData, putData } from "../../../services/FetchNodeAdminServices";
 import Swal from "sweetalert2";
 import { useContext, useState, useEffect, useRef } from "react";
 
-export default function Medicine1({ onClose, onRefresh, index }) {
+export default function Medicine1({ onClose, onRefresh, index }) 
+{
+
   const { Medicine, getAllProduct, product, Aid, getAllTemplatesData, templateData, getAllTemplates, templates } = useContext(MainContext);
   const navigate = useNavigate();
   const emptyRow = { DrugName: "", customDrug: "", eye: "", type: "", dose: "", duration: "", time: "", comment: "." };
   const [items, setItems] = useState([emptyRow]);
   const [source, setSource] = useState("medicine");
+
+
 
   // this is for the search medicine implementation 
   const [highlighted, setHighlighted] = useState(-1);
@@ -17,7 +21,10 @@ export default function Medicine1({ onClose, onRefresh, index }) {
   const [openRows, setOpenRows] = useState([]);          // which rows have dropdown open
   const dropdownRefs = useRef([]);                       // one ref per row
 
-  console.log(Medicine[index])
+  console.log(Medicine[index]);
+
+
+
 
   // Initialize when items change
   useEffect(() => {
@@ -28,6 +35,9 @@ export default function Medicine1({ onClose, onRefresh, index }) {
     }
     setOpenRows(items.map(() => false));
   }, [items.length]);
+
+
+
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -42,6 +52,9 @@ export default function Medicine1({ onClose, onRefresh, index }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+
+
+
   // const handleSelect = (id) => {
   //   handletemplateChange(id);
   //   setIsOpen(false);
@@ -53,6 +66,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
     getAllProduct()
     getAllTemplates()
   }, [])
+
 
 
   const normalizeItems = (data) => {
@@ -89,6 +103,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
   };
 
 
+
   useEffect(() => {
 
     if (!Medicine?.length) {
@@ -97,6 +112,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
     }
 
     let dataToUse = [];
+
 
     // ✅ If index is provided → show only that row
     if (index !== undefined && index !== null) {
@@ -110,6 +126,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
       // include an extra blank row so user can add new items without affecting existing ones
       dataToUse = Medicine;
     }
+
 
     const normalized = normalizeItems(dataToUse);
     setItems(normalized);
@@ -166,6 +183,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
   };
 
 
+
   // Enter key handler
   const handleKeyDown = (e, index) => {
     if (e.key === "Enter") {
@@ -177,6 +195,25 @@ export default function Medicine1({ onClose, onRefresh, index }) {
       }
     }
   };
+
+
+    
+
+  // yh remove krega row ko jis row k cross pr ap click karoge usi row ko delete kr dega
+
+  const handleRemoveRow = (index) => {
+  if (items.length === 1) {
+    setItems([emptyRow]); // at least one row rahe
+    return;
+  }
+
+  const updated = items.filter((_, i) => i !== index);
+  setItems(updated);
+};
+
+
+
+
 
 
   const handleSave = async () => {
@@ -438,6 +475,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
                   <th>Dose</th>
                   <th>Duration</th>
                   <th>Personal Comment</th>
+                  <th>Remove</th>
                 </tr>
               </thead>
               <tbody>
@@ -692,6 +730,8 @@ export default function Medicine1({ onClose, onRefresh, index }) {
                     </td>
 
                     <td><input size={2} type="text" className="form-control" value={item.comment} onChange={(e) => handleChange(index, "comment", e.target.value)} onKeyDown={(e) => handleKeyDown(e, index)} disabled={index == null && item.id} /></td>
+                    <td><i className="bi bi-x-circle" style={{justifyItems:'center', fontSize:24,marginLeft:25,cursor:'pointer'}} onClick={() => handleRemoveRow(index)} ></i></td>
+
                   </tr>
                 ))}
 

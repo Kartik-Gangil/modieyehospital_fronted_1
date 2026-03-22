@@ -185,6 +185,24 @@ export default function CustomerBill() {
 
 
 
+    
+
+  // yh remove krega row ko jis row k cross pr ap click karoge usi row ko delete kr dega
+
+  const handleRemoveRow = (index) => {
+  if (items.length === 1) {
+    setItems([emptyRow]); // at least one row rahe
+    return;
+  }
+
+  const updated = items.filter((_, i) => i !== index);
+  setItems(updated);
+};
+
+
+
+
+
 
   return (
     <div id="printableBill" className="printArea">
@@ -229,6 +247,7 @@ export default function CustomerBill() {
                       <th>QTY</th>
                       <th>M.R.P</th>
                       <th>AMOUNT</th>
+                      <th>Remove</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -302,6 +321,7 @@ export default function CustomerBill() {
                           </td>
 
                           <td>{rowAmount ? rowAmount.toFixed(2) : ""}</td>
+                          <td><i className="bi bi-x-circle" style={{justifyItems:'center', fontSize:24,marginLeft:25,cursor:'pointer'}} onClick={() => handleRemoveRow(index)} ></i></td>
                         </tr>
                       );
                     })}

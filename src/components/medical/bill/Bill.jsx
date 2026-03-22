@@ -7,7 +7,8 @@ import { useContext, useState, useEffect, useMemo } from "react";
 
 
 
-export default function Bill() {
+export default function Bill() 
+{
   const location = useLocation();
   const editData = location?.state?.product;
   const mode = location?.state?.show || "";
@@ -150,6 +151,23 @@ export default function Bill() {
     }
   };
 
+  
+
+  // yh remove krega row ko jis row k cross pr ap click karoge usi row ko delete kr dega
+
+  const handleRemoveRow = (index) => {
+  if (items.length === 1) {
+    setItems([emptyRow]); // at least one row rahe
+    return;
+  }
+
+  const updated = items.filter((_, i) => i !== index);
+  setItems(updated);
+};
+
+
+
+
 
   const handleSave = async () => {
 
@@ -189,6 +207,8 @@ export default function Bill() {
       alert("Server Error ❌");
     }
   };
+
+
 
 
   /**********Edit Data**************************** */
@@ -237,6 +257,8 @@ export default function Bill() {
 
 
   /************************************************ */
+
+
 
 
 
@@ -350,6 +372,7 @@ export default function Bill() {
                 <th>P. RATE/S</th>
                 <th>GST %</th>
                 <th>AMOUNT</th>
+                <th>Remove</th>
               </tr>
             </thead>
             <tbody>
@@ -390,6 +413,8 @@ export default function Bill() {
                   <td><input size={4} type="text" className="form-control form-control-sm" value={item.purchaseRate} onChange={(e) => handleChange(index, "purchaseRate", e.target.value)} onKeyDown={(e) => handleKeyDown(e, index)} /></td>
                   <td><input size={2} type="text" className="form-control form-control-sm" value={item.gstPercent} onChange={(e) => handleChange(index, "gstPercent", e.target.value)} onKeyDown={(e) => handleKeyDown(e, index)} /></td>
                   <td><input size={2} type="text" className="form-control form-control-sm" value={item.purchaseRate * item.quantity + (item.purchaseRate * item.quantity) * item.gstPercent / 100} /></td>
+                  <td><i className="bi bi-x-circle" style={{justifyItems:'center', fontSize:24,marginLeft:25,cursor:'pointer'}} onClick={() => handleRemoveRow(index)} ></i></td>
+                  
                 </tr>
               ))}
 

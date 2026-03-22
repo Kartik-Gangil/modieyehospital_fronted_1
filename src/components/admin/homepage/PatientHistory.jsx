@@ -29,12 +29,15 @@ export default function PatientHistory({ onRefresh })
   const activeRecord = vision.find((rec) => rec.created_at === activeDate);
   // const RefactiveRecord = refractionData.find((rec) => rec.created_at === RefactiveDate);
 
+
+
   // ✅ Vision default date (runs only when vision changes)
   useEffect(() => {
     if (vision.length > 0) {
       setActiveDate(prev => prev || vision[0].created_at);
     }
   }, [vision]);
+
 
   // ✅ Refraction default date (runs only when refractionData changes)
   useEffect(() => {
@@ -62,6 +65,7 @@ export default function PatientHistory({ onRefresh })
   }, {});
 
   const dates = Object.keys(groupedRefraction);
+  
 
   // whenever the list of dates changes, pick a sensible default. we also handle
   // the case where the current refActiveDate is not part of the available dates

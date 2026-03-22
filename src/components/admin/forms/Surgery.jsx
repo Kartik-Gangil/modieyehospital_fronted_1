@@ -69,8 +69,11 @@ const ALL_SURGERIES = [
   'Vitrectomy + MP + ERM Peeling + ILM Transplant + FAE + EL + Gas under GVP',
 ];
 
+
+
 // ─── Searchable Surgery Dropdown ────────────────────────────────────────────
-function SurgerySearchSelect({ value, onChange, onKeyDown }) {
+function SurgerySearchSelect({ value, onChange, onKeyDown }) 
+{
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [highlighted, setHighlighted] = useState(0);
@@ -82,6 +85,8 @@ function SurgerySearchSelect({ value, onChange, onKeyDown }) {
   const filtered = query.trim()
     ? ALL_SURGERIES.filter(s => s.toLowerCase().startsWith(query.toLowerCase()))
     : ALL_SURGERIES;
+
+
 
   // ✅ Calculate position on open
   useEffect(() => {
@@ -97,6 +102,8 @@ function SurgerySearchSelect({ value, onChange, onKeyDown }) {
     }
   }, [open]);
 
+
+
   // ✅ Close on outside click
   useEffect(() => {
     const handler = (e) => {
@@ -109,11 +116,15 @@ function SurgerySearchSelect({ value, onChange, onKeyDown }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+
+
   const handleSelect = (surgery) => {
     onChange(surgery);
     setQuery("");
     setOpen(false);
   };
+
+
 
   const handleKeyboardNav = (e) => {
     if (!open) return;
@@ -132,6 +143,8 @@ function SurgerySearchSelect({ value, onChange, onKeyDown }) {
       setQuery("");
     }
   };
+
+
 
   const dropdown = (
     <ul style={{
@@ -171,6 +184,8 @@ function SurgerySearchSelect({ value, onChange, onKeyDown }) {
       )}
     </ul>
   );
+
+
 
   return (
     <div ref={wrapperRef} style={{ position: "relative" }}>
@@ -246,6 +261,8 @@ function SurgerySearchSelect({ value, onChange, onKeyDown }) {
   );
 }
 
+
+
 // ─── Main Component ──────────────────────────────────────────────────────────
 export default function Surgery({ index, onRefresh, onClose }) {
   const { surgery, Aid } = useContext(MainContext);
@@ -253,6 +270,8 @@ export default function Surgery({ index, onRefresh, onClose }) {
 
   const emptyRow = { SurgeryName: "", eye: "", message: "" };
   const [items, setItems] = useState([emptyRow]);
+
+
 
   function normalizeItems(data) {
     if (!data?.length) return [emptyRow];
@@ -264,11 +283,15 @@ export default function Surgery({ index, onRefresh, onClose }) {
     }));
   }
 
+
+
   useEffect(() => {
     if (!surgery?.length) {
       setItems([emptyRow]);
       return;
     }
+
+
 
     let dataToUse = [];
     if (index !== undefined && index !== null) {
@@ -277,6 +300,8 @@ export default function Surgery({ index, onRefresh, onClose }) {
     } else {
       dataToUse = surgery;
     }
+
+
 
     const normalized = normalizeItems(dataToUse);
     setItems(normalized);
@@ -288,12 +313,13 @@ export default function Surgery({ index, onRefresh, onClose }) {
     setItems(updated);
   };
 
+
+
   const isRowComplete = (row) =>
-    Boolean(
-      row?.SurgeryName?.trim() &&
-      ["left", "right", "both"].includes(row?.eye) &&
-      row?.message?.trim()
-    );
+    Boolean(row?.SurgeryName?.trim() && ["left", "right", "both"].includes(row?.eye) && row?.message?.trim() );
+
+
+
 
   const handleKeyDown = (e, idx) => {
     if (e.key === "Enter") {
@@ -303,6 +329,27 @@ export default function Surgery({ index, onRefresh, onClose }) {
       }
     }
   };
+
+
+    
+
+  // yh remove krega row ko jis row k cross pr ap click karoge usi row ko delete kr dega
+
+  const handleRemoveRow = (index) => {
+  if (items.length === 1) {
+    setItems([emptyRow]); // at least one row rahe
+    return;
+  }
+
+  const updated = items.filter((_, i) => i !== index);
+  setItems(updated);
+};
+
+
+
+
+
+
 
   const handleSave = async () => {
     const filteredItems = items.filter(row => isRowComplete(row));
@@ -327,6 +374,8 @@ export default function Surgery({ index, onRefresh, onClose }) {
     onClose()
   };
 
+
+
   const handleEditData = async () => {
     try {
       const surgeries = items.filter(row => isRowComplete(row));
@@ -334,10 +383,8 @@ export default function Surgery({ index, onRefresh, onClose }) {
         alert("Please enter at least one item");
         return;
       }
-      const result = await putData(
-        `patient/v1/update/surgery/${surgeries[0].id}`,
-        surgeries[0]
-      );
+      const result = await putData(`patient/v1/update/surgery/${surgeries[0].id}`,surgeries[0]);
+
       if (result.status) {
         Swal.fire({
           position: "top-end",
@@ -346,7 +393,8 @@ export default function Surgery({ index, onRefresh, onClose }) {
           showConfirmButton: false,
           timer: 2000,
         });
-      } else {
+      }
+       else {
         Swal.fire({
           position: "top-end",
           icon: "error",
@@ -355,6 +403,7 @@ export default function Surgery({ index, onRefresh, onClose }) {
           timer: 2000,
         });
       }
+
     } catch (error) {
       console.error(error);
       Swal.fire({ icon: "error", title: "Server Error", timer: 2000 });
@@ -363,30 +412,19 @@ export default function Surgery({ index, onRefresh, onClose }) {
     onClose()
   };
 
+
+
   function resetData() {
     setItems([emptyRow]);
   }
 
   return (
     <div>
-      <div style={{
-        background: "lightgrey",
-        width: "100%",
-        fontWeight: "bold",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: 20,
-      }}>
+      <div style={{background: "lightgrey",width: "100%",fontWeight: "bold",display: "flex",alignItems: "center",justifyContent: "center",height: 20}}>
         Add Surgery
       </div>
 
-      <div style={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}>
+      <div style={{width: "100%",display: "flex", justifyContent: "center", alignItems: "center"}}>
         <div style={{ width: "100%", margin: 10, padding: 10, borderRadius: 10 }}>
 
           {/* ✅ overflow visible so portal isn't clipped */}
@@ -397,6 +435,7 @@ export default function Surgery({ index, onRefresh, onClose }) {
                   <th style={{ width: "45%" }}>Surgery Name</th>
                   <th style={{ width: "15%" }}>Eye</th>
                   <th>Personal Comment</th>
+                  <th>Remove</th>
                 </tr>
               </thead>
               <tbody>
@@ -427,14 +466,11 @@ export default function Surgery({ index, onRefresh, onClose }) {
                     </td>
 
                     <td>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={item.message}
-                        onChange={(e) => handleChange(idx, "message", e.target.value)}
-                        onKeyDown={(e) => handleKeyDown(e, idx)}
-                      />
+                      <input type="text" className="form-control" value={item.message} onChange={(e) => handleChange(idx, "message", e.target.value)} onKeyDown={(e) => handleKeyDown(e, idx)}/>
                     </td>
+
+                    <td><i className="bi bi-x-circle" style={{justifyItems:'center', fontSize:24,marginLeft:25,cursor:'pointer'}} onClick={() => handleRemoveRow(idx)} ></i></td>
+                    
                   </tr>
                 ))}
               </tbody>
