@@ -243,13 +243,13 @@ export default function PatientHistory({ onRefresh })
             {Medicine.length > 0 ? Medicine.map((item, i) => {
               return (
                 <tr key={i}>
-                  <td>{safeValue(item.medicine)}</td>
+                  <td>{new Date(item.Date).toLocaleDateString()}</td>
+                  <td>{safeValue(item.DrugName)}</td>
                   <td>{safeValue(item.eye)}</td>
                   <td>{safeValue(item.type)}</td>
-                  <td>{safeValue(item.Dose)}</td>
+                  <td>{safeValue(item.dose)}</td>
                   <td>{safeValue(item.duration)}</td>
                   <td>{safeValue(item.message)}</td>
-                  <td>{new Date(item.Date).toLocaleDateString()}</td>
                   <td className='bi'>
                     <i className="bi bi-pencil" onClick={() => openDialog("Medicines", i)} style={{ fontSize: 18, marginLeft: 5, fontWeight: 'bolder', cursor: 'pointer' }}></i>
                     <i className="bi bi-trash3-fill" onClick={() => { deleteMedicine(item.id).then(() => onRefresh()) }} style={{ fontSize: 18, marginLeft: 15, fontWeight: 'bolder', cursor: 'pointer' }}></i>

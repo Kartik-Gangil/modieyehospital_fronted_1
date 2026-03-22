@@ -3,6 +3,7 @@ import Header from '../homepage/Header'
 import MainContext from '../../../context/MainContext'
 import { useEffect } from 'react'
 import { putData } from '../../../services/FetchNodeAdminServices';
+import Swal from 'sweetalert2';
 
 export default function ShowPatientDetails() {
   const { allPatients, getAllPatients } = useContext(MainContext);
@@ -29,13 +30,34 @@ export default function ShowPatientDetails() {
 
   const handleClose = () => setShowModal(false)
 
-  const handleSave = async() => {
+  const handleSave = async () => {
     console.log("Updated Patient:", selectedPatient)
     try {
-      const data = await putData('')
-      
+
+      const result = await putData(
+        `patient/v1/update/Patient/${selectedPatient.id}`,
+        selectedPatient
+      );
+      if (result.status) {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Patient Updated Successfully",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      } else {
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Patient Update Failed",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
     } catch (error) {
-      
+      console.error(error);
+      Swal.fire({ icon: "error", title: "Server Error", timer: 2000 });
     }
     setShowModal(false)
   }
@@ -143,7 +165,7 @@ export default function ShowPatientDetails() {
               </div>
             </div>
 
-          <div className="modal-backdrop fade show w-100 h-100"></div>
+            <div className="modal-backdrop fade show w-100 h-100"></div>
           </>
         )
       }

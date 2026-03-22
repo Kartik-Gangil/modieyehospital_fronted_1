@@ -2,14 +2,53 @@ import { Link, useNavigate } from "react-router-dom";
 import MainContext from "../../../context/MainContext";
 import { postData, putData } from "../../../services/FetchNodeAdminServices";
 import Swal from "sweetalert2";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 
 export default function Medicine1({ onClose, onRefresh, index }) {
   const { Medicine, getAllProduct, product, Aid, getAllTemplatesData, templateData, getAllTemplates, templates } = useContext(MainContext);
   const navigate = useNavigate();
-  const emptyRow = { DrugName: "", customDrug: "", eye: "", type: "", dose: "", duration: "", time: "", comment: "" };
+  const emptyRow = { DrugName: "", customDrug: "", eye: "", type: "", dose: "", duration: "", time: "", comment: "." };
   const [items, setItems] = useState([emptyRow]);
   const [source, setSource] = useState("medicine");
+
+  // this is for the search medicine implementation 
+  const [highlighted, setHighlighted] = useState(-1);
+  const [searchValues, setSearchValues] = useState([]); // one search string per row
+  const [openRows, setOpenRows] = useState([]);          // which rows have dropdown open
+  const dropdownRefs = useRef([]);                       // one ref per row
+
+  console.log(Medicine[index])
+
+  // Initialize when items change
+  useEffect(() => {
+    if (items.length > 1) {
+      setSearchValues(items.map(item =>
+        item.DrugName && item.DrugName !== "Other" ? item.DrugName : "Other"
+      ));
+    }
+    setOpenRows(items.map(() => false));
+  }, [items.length]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      dropdownRefs.current.forEach((ref, i) => {
+        if (ref && !ref.contains(e.target)) {
+          setOpenRows(prev => { const copy = [...prev]; copy[i] = false; return copy; });
+        }
+      });
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // const handleSelect = (id) => {
+  //   handletemplateChange(id);
+  //   setIsOpen(false);
+  //   setSearch('');
+  //   setHighlighted(-1);
+  // };
+
   useEffect(() => {
     getAllProduct()
     getAllTemplates()
@@ -24,7 +63,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
       const drug = item.DrugName || item.medicine || "";
 
       // prepare duration/time separation when backend sends combined string
-      let duration = item.duration || "";
+      let duration = item.duration || item.Duration || "";
       let time = item.time || item.Intake || "";
       if (!time && duration) {
         const parts = duration.split(" ");
@@ -38,7 +77,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
       return {
         id: item.id || "",
         DrugName: isInList ? drug : "Other",
-        customDrug: isInList ? "" : drug,
+        customDrug: item?.customDrug || (!isInList && drug ? drug : ""),
         eye: item.eye || "",
         type: item.type || "",
         dose: item.Dose || item.dose || "",
@@ -69,11 +108,18 @@ export default function Medicine1({ onClose, onRefresh, index }) {
     // ✅ If index not provided → show full array (global mode)
     else {
       // include an extra blank row so user can add new items without affecting existing ones
-      dataToUse = [Medicine];
+      dataToUse = Medicine;
     }
 
     const normalized = normalizeItems(dataToUse);
     setItems(normalized);
+
+    setSearchValues(normalized.map(item =>
+      item.DrugName !== "Other" ? item.DrugName : item.customDrug || ""
+    ));
+    setOpenRows(normalized.map(() => false));
+
+
     setSource("medicine");
 
     setTimeout(() => {
@@ -84,7 +130,12 @@ export default function Medicine1({ onClose, onRefresh, index }) {
 
   useEffect(() => {
     if (templateData?.description) {
-      setItems(normalizeItems(templateData?.description));
+      const normalized = normalizeItems(templateData?.description);
+      setItems(normalized);
+      setSearchValues(normalized.map(item =>
+        item.DrugName !== "Other" ? item.DrugName : item.customDrug || ""
+      ));
+      setOpenRows(normalized.map(() => false));
       setSource("template");
     }
   }, [templateData]);
@@ -152,16 +203,17 @@ export default function Medicine1({ onClose, onRefresh, index }) {
       const response = await postData(`patient/v1/Medicine/${Aid}`, { filteredItems: newItems });
       const result = response.data;
       if (result.success) {
-        alert("Bill Saved Successfully ✅");
+        alert("Medicine Saved Successfully ✅");
         setItems([emptyRow]); // reset table
       } else {
-        alert("Failed to save bill ❌");
+        alert("Failed to save Medicine ❌");
       }
     } catch (error) {
       console.error(error);
       alert("Server Error ❌");
     }
     onClose();
+
     onRefresh();
   };
 
@@ -174,12 +226,19 @@ export default function Medicine1({ onClose, onRefresh, index }) {
   // but respect `index` so single-row mode isn't overwritten.
   useEffect(() => {
     if (Medicine?.length && product?.length) {
+      let dataToUse = [];
       if (index !== undefined && index !== null) {
         const selected = Medicine[index];
-        setItems(normalizeItems(selected ? [selected] : []));
+        dataToUse = selected ? [selected] : [];
       } else {
-        setItems(normalizeItems([Medicine]));
+        dataToUse = Medicine; // ✅ was wrongly wrapped as [Medicine] before
       }
+      const normalized = normalizeItems(dataToUse);
+      setItems(normalized);
+      setSearchValues(normalized.map(item =>
+        item.DrugName !== "Other" ? item.DrugName : item.customDrug || ""
+      ));
+      setOpenRows(normalized.map(() => false));
     }
   }, [Medicine, product, index]);
 
@@ -247,7 +306,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
         return {
           ...row,
           DrugName: drugName,
-          duration: row.duration && row.time ? `${row.duration} ${row.time}` : row.duration
+          Duration: row.duration && row.time ? `${row.duration} ${row.time}` : row.duration
         };
       });
 
@@ -258,7 +317,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
         return;
       }
 
-      console.log(filteredItems);
+      console.log({ filteredItems });
 
       const result = await putData(`patient/v1/update/Medicine/${filteredItems[0]?.id}`, filteredItems[0]);
 
@@ -333,6 +392,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
     } catch (error) {
       console.error(error)
     }
+    onClose();
     onRefresh();
   }
 
@@ -385,7 +445,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
 
                   <tr key={index}>
                     <td>
-                      <select
+                      {/*<select
                         className="form-select"
                         value={item.DrugName}
                         onChange={(e) => {
@@ -408,6 +468,155 @@ export default function Medicine1({ onClose, onRefresh, index }) {
 
                         <option value="Other">Other</option>
                       </select>
+*/}
+
+
+                      <div
+                        ref={el => dropdownRefs.current[index] = el}
+                        style={{ position: 'relative' }}
+                      >
+                        {/* Direct type input — no trigger button */}
+                        <input
+                          type="text"
+                          id="searchBox"
+                          className="form-control form-control-sm"
+                          placeholder="Type medicine name..."
+                          value={searchValues[index] || ''}
+                          autoComplete="off"
+                          disabled={index == null && item.id}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            // update search display
+                            const newSearch = [...(searchValues || [])];
+                            newSearch[index] = val;
+                            setSearchValues(newSearch);
+                            // open dropdown while typing
+                            const newOpen = [...(openRows || [])];
+                            newOpen[index] = val.length > 0;
+                            setOpenRows(newOpen);
+                            // if cleared, also clear the row value
+                            if (!val) handleChange(index, "DrugName", "");
+                          }}
+                          onKeyDown={(e) => {
+                            const rowFiltered = product?.filter(p =>
+                              p.name.toLowerCase().startsWith((searchValues[index] || '').toLowerCase())
+                            ) || [];
+
+                            if (e.key === 'ArrowDown') {
+                              setHighlighted(prev => Math.min(prev + 1, rowFiltered.length - 1));
+                            } else if (e.key === 'ArrowUp') {
+                              setHighlighted(prev => Math.max(prev - 1, 0));
+                            } else if (e.key === 'Enter' && highlighted >= 0) {
+                              const selected = rowFiltered[highlighted];
+                              if (selected) {
+                                const newSearch = [...searchValues];
+                                newSearch[index] = selected.name;
+                                setSearchValues(newSearch);
+                                handleChange(index, "DrugName", selected.name);
+                                handleChange(index, "customDrug", "");
+                                const newOpen = [...openRows];
+                                newOpen[index] = false;
+                                setOpenRows(newOpen);
+                                setHighlighted(-1);
+                              }
+                            } else if (e.key === 'Escape') {
+                              const newOpen = [...openRows];
+                              newOpen[index] = false;
+                              setOpenRows(newOpen);
+                            } else {
+                              handleKeyDown(e, index); // your existing enter-to-add-row logic
+                            }
+                          }}
+                        />
+
+                        {/* Dropdown list */}
+                        {openRows[index] && (
+                          <div style={{
+                            position: 'absolute',
+                            top: '100%',
+                            left: 0,
+                            right: 0,
+                            zIndex: 1000,
+                            background: '#fff',
+                            border: '1px solid #ced4da',
+                            borderRadius: 4,
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                          }}>
+                            <ul style={{
+                              listStyle: 'none',
+                              margin: 0,
+                              padding: 0,
+                              maxHeight: 200,
+                              overflowY: 'auto',
+                            }}>
+
+
+                              {(() => {
+                                const rowFiltered = product?.filter(p =>
+                                  p.name.toLowerCase().startsWith((searchValues[index] || '').toLowerCase())
+                                ) || [];
+
+                                return rowFiltered.length > 0 ? (
+                                  rowFiltered.map((p, pIdx) => (
+                                    <li
+                                      key={p.id}
+                                      style={{
+                                        padding: '6px 12px',
+                                        cursor: 'pointer',
+                                        fontSize: 13,
+                                        background: highlighted === pIdx ? '#e9ecef' :
+                                          item.DrugName === p.name ? '#f0f7ff' : 'transparent',
+                                        fontWeight: item.DrugName === p.name ? 600 : 400,
+                                      }}
+                                      onMouseEnter={() => setHighlighted(pIdx)}
+                                      onClick={() => {
+                                        const newSearch = [...searchValues];
+                                        newSearch[index] = p.name;
+                                        setSearchValues(newSearch);
+                                        handleChange(index, "DrugName", p.name);
+                                        handleChange(index, "customDrug", "");
+                                        const newOpen = [...openRows];
+                                        newOpen[index] = false;
+                                        setOpenRows(newOpen);
+                                        setHighlighted(-1);
+                                      }}
+                                    >
+                                      {p.name}
+                                    </li>
+                                  ))
+                                ) : (
+                                  <li style={{ padding: '6px 12px', color: '#999', fontStyle: 'italic', fontSize: 13 }}>
+                                    No medicines found
+                                  </li>
+                                );
+                              })()}
+                              {/* "Other" option always available */}
+                              <li
+                                style={{
+                                  padding: '6px 12px',
+                                  cursor: 'pointer',
+                                  color: '#666',
+                                  borderBottom: '1px solid #f0f0f0',
+                                  fontSize: 13,
+                                }}
+                                onClick={() => {
+                                  const newSearch = [...searchValues];
+                                  newSearch[index] = '';
+                                  setSearchValues(newSearch);
+                                  handleChange(index, "DrugName", "Other");
+                                  handleChange(index, "customDrug", "");
+                                  // document.querySelector('#searchBox').value("Other")
+                                  const newOpen = [...openRows];
+                                  newOpen[index] = false;
+                                  setOpenRows(newOpen);
+                                }}
+                              >
+                                Other
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+                      </div>
 
                       {/* Show textbox ONLY when Other selected */}
                       {item.DrugName === "Other" && (
@@ -515,7 +724,7 @@ export default function Medicine1({ onClose, onRefresh, index }) {
 
         </div>
       </div>
-    </div>)
+    </div >)
 }
 
 
