@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import Header from "../../admin/homepage/Header";
-import { postData } from "../../../services/FetchNodeAdminServices";
+import { postData, putData } from "../../../services/FetchNodeAdminServices";
 import Swal from "sweetalert2";
 import MainContext from "../../../context/MainContext";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -31,13 +31,17 @@ export default function AddProduct()
 
          console.log("ddd",editData)
 
-        setSupplierId(editData[0]?.supplier || '');
+        setSupplierId(editData[0]?.supplierId || '');
         setProduct(editData[0]?.name || '');
         setPacking(editData[0]?.packing || '');
         setCompany(editData[0]?.company || '');
         setTablet(editData[0]?.tablet || '');
         setMRP(editData[0]?.mrp || '');
-        setPRate(editData[0]?.prate || '');
+        setPRate(editData[0]?.Prate || '');
+        setCGST(editData[0]?.cgst || "");
+        setSgst(editData[0]?.sgst || "");
+        setCase1(editData[0]?.ConvCASE || '');
+        setTablet(editData[0]?.Tabs || '');
        
     }, [editData])
 
@@ -181,6 +185,63 @@ export default function AddProduct()
       setTablet('')
 
     }
+
+
+    /**************Edit Data*************** */
+
+
+   const handleEditData = async () => {
+    try {
+        const formDataObj = {
+            id: editData[0]?.id,   // VERY IMPORTANT
+
+            supplierId: supplierId,
+            name: product,
+            packing: packing,
+            company: company,
+            tablet: tablet,
+
+            mrp: parseFloat(mrp),
+            Prate: prate,
+            ConvCASE: case1,
+            sgst: sgst,
+            cgst: cgst
+        };
+
+        console.log("Update Data =>", formDataObj);
+
+        const result = await putData(`medical/api/update/medicine/${editData[0].id}`, formDataObj);
+
+        if (result.status) {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Product Updated Successfully",
+                showConfirmButton: false,
+                timer: 2000
+            });
+
+            navigate("/showproduct");
+        } else {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Update Failed",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
+    } catch (error) {
+        console.error(error);
+        Swal.fire({
+            icon: "error",
+            title: "Server Error"
+        });
+    }
+};
+
+/************************************* */
 
 
 
@@ -369,7 +430,7 @@ export default function AddProduct()
 
                     <div className="col-lg-4 col-xs-12 mb-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <label className="form-label fw-bold me-2 mb-0">Tablet Per Pata </label>
-                        <input type="text" value={tablet} onChange={(event) => setTablet(event.target.value)} className="form-control" placeholder="Enter here..." />
+                        <input type="text" required value={tablet} onChange={(event) => setTablet(event.target.value)} className="form-control" placeholder="Enter here..." />
                     </div>
                 </div>
 
@@ -454,7 +515,7 @@ export default function AddProduct()
 
                  {mode == 'edit' ? <div className="row">
           <div className="col-lg-6" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <button type="button" className="btn btn-primary">Update</button>
+            <button onClick={handleEditData} type="button" className="btn btn-primary">Update</button>
           </div>
 
           <div className="col-lg-6" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

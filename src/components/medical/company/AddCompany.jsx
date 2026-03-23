@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import Header from "../../admin/homepage/Header";
-import { postData } from "../../../services/FetchNodeAdminServices";
+import { postData,putData } from "../../../services/FetchNodeAdminServices";
 import Swal from "sweetalert2";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function AddCompany()
  {
     const location=useLocation();
     const editData = location?.state?.product;
     const mode = location?.state?.show || "";
+
+    const navigate=useNavigate();
    
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
@@ -16,6 +18,7 @@ export default function AddCompany()
     const [phone, setPhone] = useState('');
     const [gstno, setGST] = useState('');
     const [dlno, setDL] = useState('');
+
 
 
     useEffect(()=>{
@@ -27,10 +30,11 @@ export default function AddCompany()
         setAddress(editData[0]?.address || '');
         setEmail(editData[0]?.email || '');
         setPhone(editData[0]?.phone || '');
-        setGST(editData[0]?.gstno || '');
-        setDL(editData[0]?.dlno || '');
+        setGST(editData[0]?.gstNo || '');
+        setDL(editData[0]?.DLno || '');
 
     },[editData])
+
 
 
     const handleSumbitData = async () => {
@@ -69,9 +73,8 @@ export default function AddCompany()
             });
         }
 
-
-
     }
+
 
     function resetData() {
         setName('');
@@ -83,19 +86,78 @@ export default function AddCompany()
     }
 
 
+
+
+    /*************Edit Data*************************** */
+
+
+   const handleEditData = async () => {
+    try {
+        const formDataObj = {
+            id: editData[0]?.id,   // VERY IMPORTANT
+            name: name,
+            address: address,
+            email: email,
+            phone: phone,
+            gstNo: gstno,
+            DLno: dlno
+        };
+
+        const result = await putData(`medical/api/update/supplier/${editData[0].id}`, formDataObj);
+        console.log('xxx',result)
+
+        if (result.status) {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Company Updated Successfully",
+                showConfirmButton: false,
+                timer: 2000
+            });
+
+            navigate("/showcompany"); // go back to list
+        } else {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Update Failed",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
+    } catch (error) {
+        console.error(error);
+        Swal.fire({
+            icon: "error",
+            title: "Server Error"
+        });
+    }
+};
+
+
+
+
+    /**************************************************/
+
+
+
+
+
+
     
-  /**********Delete Data**************************** */
+  /***************Delete Data**************************** */
 
   const handleDelete = async () => {
 
-    if (!window.confirm("Delete this ?")) return;
+    if (!window.confirm("Delete this Company ?")) return;
     console.log(editData)
     try {
       const res = await deleteData(`medical/api/delete/purchaseBill/${editData[0].id}`);
       console.log(res)
       if (res.data.success) {
         alert("Deleted ✅");
-        navigate("/showbill"); // refresh table
+        navigate("/showcompany"); // refresh table
       } else {
         alert("Delete failed");
       }
@@ -157,7 +219,7 @@ export default function AddCompany()
 
                  {mode == 'edit' ? <div className="row">
           <div className="col-lg-6" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <button type="button" className="btn btn-primary">Update</button>
+            <button onClick={handleEditData} type="button" className="btn btn-primary">Update</button>
           </div>
 
           <div className="col-lg-6" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
