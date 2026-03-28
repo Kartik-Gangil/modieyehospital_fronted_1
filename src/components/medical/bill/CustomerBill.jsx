@@ -118,12 +118,12 @@ export default function CustomerBill() {
       const response = await postData("medical/api/saleBill", billData);
 
       const result = response.data;
-      console.log(response);
-      if (result.success) {
+      // console.log(response);
+      if (result?.success) {
         alert("Bill Saved Successfully ✅");
         setItems([emptyRow]); // reset table
       } else {
-        alert("Failed to save bill ❌");
+        alert(response.error);
       }
     } catch (error) {
       console.error(error);
@@ -287,7 +287,7 @@ export default function CustomerBill() {
                                   handleChange(
                                     index,
                                     "mrp",
-                                    selectedProduct.mrp,
+                                    selectedProduct.mrp / (selectedProduct.Tabs || 10),
                                   );
                                 }
                               }}
