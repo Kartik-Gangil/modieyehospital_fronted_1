@@ -44,6 +44,7 @@ export default function ShowCustomerBill() {
         <thead className="table-secondary">
           <tr>
             <th className="text-center">Seq</th>
+            <th className="text-center">Date</th>
             <th className="text-center">Patient Name</th>
             <th className="text-center">Phone No.</th>
             <th className="text-center">Amount</th>
@@ -60,6 +61,7 @@ export default function ShowCustomerBill() {
                 return (<tr key={i}>
 
                   <td className="text-center">{i + 1}</td>
+                  <td className="text-center">{new Date(item?.createdAt).toDateString().split(' ').slice(0, 4).join('-')}</td>
                   <td className="text-center">{item.Customer_Name}</td>
                   <td className="text-center">{item.phone}</td>
                   <td className="text-center">{item.amount}</td>
