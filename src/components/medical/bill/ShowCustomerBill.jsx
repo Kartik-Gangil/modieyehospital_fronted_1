@@ -12,10 +12,17 @@ export default function ShowCustomerBill() {
 
   const [customerBill, setCustomerBill] = useState([]);
 
+  const [filteredBill, setFilteredBill] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [totalAmount, setTotalAmount] = useState(0);    
+
+
+
   const fetchbill = async () => {
     var result = await getData('medical/api/list/saleBills');
     //  console.log("nnnn",result.data)
-    setCustomerBill(result.data)
+    setCustomerBill(result.data);
+    setFilteredBill(result.data);  // store the filterbill through date
 
   }
 
@@ -23,6 +30,44 @@ export default function ShowCustomerBill() {
     fetchbill();
     getAllCompany();
   }, []);
+
+
+
+   {/****************** 🔥 Single Date Filter **********/}
+
+  useEffect(() => {
+  if (!selectedDate) 
+  {
+    setFilteredBill(customerBill);
+    return;
+  }
+
+  const filtered = customerBill.filter((item) => {
+
+    // convert to YYYY-MM-DD (same as input type="date")
+    const billDate = new Date(item.createdAt).toLocaleDateString("en-CA");
+
+    return billDate === selectedDate;
+  });
+
+  setFilteredBill(filtered);
+
+  
+
+   // 🔥 Calculate total
+  const total = filtered.reduce((sum, item) => {
+    return sum + Number(item.TotalAmount || 0);
+  }, 0);
+
+  setTotalAmount(total);
+
+
+}, [selectedDate, customerBill]);
+
+
+ {/************************************/}
+
+
 
   const handleNavigateDetails = (item) => {
     navigate('/customerbill', { state: { product: [item], show: 'edit' } });
@@ -38,6 +83,22 @@ export default function ShowCustomerBill() {
     <div style={{ background: "lightgrey", textAlign: 'center', width: "100%", height: '30px', fontWeight: "bold", fontSize: 20 }}>
       Show Customer Bill
     </div>
+
+      {/* 🔍 SINGLE DATE FILTER */}
+      <div className="d-flex gap-3 p-2 justify-content-center">
+        <div>
+          <label>Select Date</label>
+          <input type="date" className="form-control" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}/>
+        </div>
+
+        <div className="d-flex align-items-end">
+          <button className="btn btn-danger" onClick={() => setSelectedDate("") || setTotalAmount(0)}>
+            Reset
+          </button>
+        </div>
+      </div>
+
+
 
     <div className="table-responsive">
       <table className="table table-bordered table-sm">
@@ -55,13 +116,13 @@ export default function ShowCustomerBill() {
         </thead>
         <tbody>
           {
-            customerBill.length > 0 ? (
+            filteredBill.length > 0 ? (
 
-              customerBill.map((item, i) => {
+              filteredBill.map((item, i) => {
                 return (<tr key={i}>
 
                   <td className="text-center">{i + 1}</td>
-                  <td className="text-center">{new Date(item?.createdAt).toDateString().split(' ').slice(0, 4).join('-')}</td>
+                  <td className="text-center">{new Date(item?.createdAt).toLocaleDateString("en-CA")}</td>
                   <td className="text-center">{item.Customer_Name}</td>
                   <td className="text-center">{item.phone}</td>
                   <td className="text-center">{item.amount}</td>
@@ -91,6 +152,13 @@ export default function ShowCustomerBill() {
     <div className="d-flex justify-content-center">
       <button onClick={() => navigate('/customerbill')} className="bg-primary rounded px-3 py-1 border-0">Add Bill</button>
     </div>
+
+
+    <div className="text-center my-2">
+  <h5>
+    Total Sales: <span style={{ color: "green" }}>₹ {totalAmount}</span>
+  </h5>
+</div>
 
 
   </div>)

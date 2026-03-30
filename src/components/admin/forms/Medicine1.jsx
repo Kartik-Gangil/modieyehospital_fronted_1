@@ -447,6 +447,7 @@ export default function Medicine1({ onClose, onRefresh, index })
       <div style={{ background: "lightgrey", width: "100%", fontWeight: "bold", display: 'flex', alignItems: 'center', justifyContent: 'center', height: '20' }} >
         Add Medicine
       </div>
+
       <div className="row">
         <div className="col-12 mb-2">
           <div style={{ fontSize: 16, fontWeight: 'bold', margin: 3, marginLeft: 10 }}>Choose Template</div>
@@ -462,10 +463,12 @@ export default function Medicine1({ onClose, onRefresh, index })
           </select>
         </div>
       </div>
+
+
       <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <div style={{ width: '100%', margin: 10, padding: 10, borderRadius: 10 }}>
 
-          <div className="table-responsive">
+          <div className="table-responsive" style={{ overflow: "visible", width: "100%" }}>
             <table className="table table-bordered table-sm purchase-table">
               <thead className="table-light">
                 <tr>
@@ -482,7 +485,7 @@ export default function Medicine1({ onClose, onRefresh, index })
                 {items.map((item, index) => (
 
                   <tr key={index}>
-                    <td>
+                    
                       {/*<select
                         className="form-select"
                         value={item.DrugName}
@@ -509,167 +512,196 @@ export default function Medicine1({ onClose, onRefresh, index })
 */}
 
 
-                      <div
-                        ref={el => dropdownRefs.current[index] = el}
-                        style={{ position: 'relative' }}
-                      >
-                        {/* Direct type input — no trigger button */}
-                        <input
-                          type="text"
-                          id="searchBox"
-                          className="form-control form-control-sm"
-                          placeholder="Type medicine name..."
-                          value={searchValues[index] || ''}
-                          autoComplete="off"
-                          disabled={index == null && item.id}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            // update search display
-                            const newSearch = [...(searchValues || [])];
-                            newSearch[index] = val;
-                            setSearchValues(newSearch);
-                            // open dropdown while typing
-                            const newOpen = [...(openRows || [])];
-                            newOpen[index] = val.length > 0;
-                            setOpenRows(newOpen);
-                            // if cleared, also clear the row value
-                            if (!val) handleChange(index, "DrugName", "");
-                          }}
-                          onKeyDown={(e) => {
-                            const rowFiltered = product?.filter(p =>
-                              p.name.toLowerCase().includes((searchValues[index] || '').toLowerCase())
-                            ) || [];
+                    <td>
+  <div ref={el => dropdownRefs.current[index] = el} style={{ position: 'relative' }}>
 
-                            if (e.key === 'ArrowDown') {
-                              setHighlighted(prev => Math.min(prev + 1, rowFiltered.length - 1));
-                            } else if (e.key === 'ArrowUp') {
-                              setHighlighted(prev => Math.max(prev - 1, 0));
-                            } else if (e.key === 'Enter' && highlighted >= 0) {
-                              const selected = rowFiltered[highlighted];
-                              if (selected) {
-                                const newSearch = [...searchValues];
-                                newSearch[index] = selected.name;
-                                setSearchValues(newSearch);
-                                handleChange(index, "DrugName", selected.name);
-                                handleChange(index, "customDrug", "");
-                                const newOpen = [...openRows];
-                                newOpen[index] = false;
-                                setOpenRows(newOpen);
-                                setHighlighted(-1);
-                              }
-                            } else if (e.key === 'Escape') {
-                              const newOpen = [...openRows];
-                              newOpen[index] = false;
-                              setOpenRows(newOpen);
-                            } else {
-                              handleKeyDown(e, index); // your existing enter-to-add-row logic
-                            }
-                          }}
-                        />
+    <input
+      type="text"
+      className="form-control form-control-sm"
+      placeholder="Type medicine name..."
+      value={searchValues[index] || ''}
+      autoComplete="off"
+      disabled={index == null && item.id}
+      onChange={(e) => {
+        const val = e.target.value;
 
-                        {/* Dropdown list */}
-                        {openRows[index] && (
-                          <div style={{
-                            position: 'absolute',
-                            top: '100%',
-                            left: 0,
-                            right: 0,
-                            zIndex: 1000,
-                            background: '#fff',
-                            border: '1px solid #ced4da',
-                            borderRadius: 4,
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                          }}>
-                            <ul style={{
-                              listStyle: 'none',
-                              margin: 0,
-                              padding: 0,
-                              maxHeight: 200,
-                              overflowY: 'auto',
-                            }}>
+        const newSearch = [...searchValues];
+        newSearch[index] = val;
+        setSearchValues(newSearch);
 
+        const newOpen = [...openRows];
+        newOpen[index] = val.length > 0;
+        setOpenRows(newOpen);
 
-                              {(() => {
-                                const rowFiltered = product?.filter(p =>
-                                  p.name.toLowerCase().includes((searchValues[index] || '').toLowerCase())
-                                ) || [];
+        if (!val) handleChange(index, "DrugName", "");
+      }}
 
-                                return rowFiltered.length > 0 ? (
-                                  rowFiltered.map((p, pIdx) => (
-                                    <li
-                                      key={p.id}
-                                      style={{
-                                        padding: '6px 12px',
-                                        cursor: 'pointer',
-                                        fontSize: 13,
-                                        background: highlighted === pIdx ? '#e9ecef' :
-                                          item.DrugName === p.name ? '#f0f7ff' : 'transparent',
-                                        fontWeight: item.DrugName === p.name ? 600 : 400,
-                                      }}
-                                      onMouseEnter={() => setHighlighted(pIdx)}
-                                      onClick={() => {
-                                        const newSearch = [...searchValues];
-                                        newSearch[index] = p.name;
-                                        setSearchValues(newSearch);
-                                        handleChange(index, "DrugName", p.name);
-                                        handleChange(index, "customDrug", "");
-                                        const newOpen = [...openRows];
-                                        newOpen[index] = false;
-                                        setOpenRows(newOpen);
-                                        setHighlighted(-1);
-                                      }}
-                                    >
-                                      {p.name}
-                                    </li>
-                                  ))
-                                ) : (
-                                  <li style={{ padding: '6px 12px', color: '#999', fontStyle: 'italic', fontSize: 13 }}>
-                                    No medicines found
-                                  </li>
-                                );
-                              })()}
-                              {/* "Other" option always available */}
-                              <li
-                                style={{
-                                  padding: '6px 12px',
-                                  cursor: 'pointer',
-                                  color: '#666',
-                                  borderBottom: '1px solid #f0f0f0',
-                                  fontSize: 13,
-                                }}
-                                onClick={() => {
-                                  const newSearch = [...searchValues];
-                                  newSearch[index] = '';
-                                  setSearchValues(newSearch);
-                                  handleChange(index, "DrugName", "Other");
-                                  handleChange(index, "customDrug", "");
-                                  // document.querySelector('#searchBox').value("Other")
-                                  const newOpen = [...openRows];
-                                  newOpen[index] = false;
-                                  setOpenRows(newOpen);
-                                }}
-                              >
-                                Other
-                              </li>
-                            </ul>
-                          </div>
-                        )}
-                      </div>
+      // ✅ ENTER + AUTO DETECT
+      onKeyDown={(e) => {
+        const val = searchValues[index]?.trim();
 
-                      {/* Show textbox ONLY when Other selected */}
-                      {item.DrugName === "Other" && (
-                        <input
-                          type="text"
-                          className="form-control mt-1"
-                          placeholder="Enter Medicine Name"
-                          value={item.customDrug}
-                          onChange={(e) =>
-                            handleChange(index, "customDrug", e.target.value)
-                          }
-                          disabled={index == null && item.id}
-                        />
-                      )}
-                    </td>
+        const rowFiltered = product?.filter(p =>
+          p.name.toLowerCase().includes(val?.toLowerCase())
+        ) || [];
+
+        if (e.key === 'ArrowDown') {
+          setHighlighted(prev => Math.min(prev + 1, rowFiltered.length - 1));
+        } 
+        else if (e.key === 'ArrowUp') {
+          setHighlighted(prev => Math.max(prev - 1, 0));
+        } 
+        else if (e.key === 'Enter') {
+          e.preventDefault();
+
+          if (highlighted >= 0 && rowFiltered[highlighted]) {
+            const selected = rowFiltered[highlighted];
+
+            const newSearch = [...searchValues];
+            newSearch[index] = selected.name;
+            setSearchValues(newSearch);
+
+            handleChange(index, "DrugName", selected.name);
+            handleChange(index, "customDrug", "");
+          } else {
+            // ✅ NOT FOUND → SAVE CUSTOM
+            const exists = product?.some(p =>
+              p.name.toLowerCase() === val.toLowerCase()
+            );
+
+            if (!exists && val) {
+              handleChange(index, "DrugName", "Other");
+              handleChange(index, "customDrug", val);
+            }
+          }
+
+          const newOpen = [...openRows];
+          newOpen[index] = false;
+          setOpenRows(newOpen);
+          setHighlighted(-1);
+
+          handleKeyDown(e, index);
+        } 
+        else if (e.key === 'Escape') {
+          const newOpen = [...openRows];
+          newOpen[index] = false;
+          setOpenRows(newOpen);
+        }
+      }}
+
+      // ✅ BLUR FIX (MOST IMPORTANT)
+      onBlur={() => {
+        const val = searchValues[index]?.trim();
+        if (!val) return;
+
+        const exists = product?.some(p =>
+          p.name.toLowerCase() === val.toLowerCase()
+        );
+
+        if (exists) {
+          handleChange(index, "DrugName", val);
+          handleChange(index, "customDrug", "");
+        } else {
+          handleChange(index, "DrugName", "Other");
+          handleChange(index, "customDrug", val);
+        }
+      }}
+    />
+
+    {/* ✅ DROPDOWN */}
+    {openRows[index] && (
+      <div style={{
+        position: 'absolute',
+        width: '100%',
+        zIndex: 1000,
+        background: '#fff',
+        border: '1px solid #ced4da',
+        borderRadius: 4,
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+      }}>
+
+       <ul style={{listStyle: 'none', margin: 0, padding: 0}}>
+        
+          {(() => {
+            const val = searchValues[index] || '';
+
+            const rowFiltered = product?.filter(p =>
+              p.name.toLowerCase().includes(val.toLowerCase())
+            ) || [];
+
+            if (rowFiltered.length > 0) {
+              return rowFiltered.map((p, pIdx) => (
+                <li
+                  key={p.id}
+                  style={{
+                    padding: '6px 12px',
+                    cursor: 'pointer',
+                    fontSize: 13,
+                    background: highlighted === pIdx ? '#e9ecef' : 'transparent'
+                  }}
+                  onMouseEnter={() => setHighlighted(pIdx)}
+                  onClick={() => {
+                    const newSearch = [...searchValues];
+                    newSearch[index] = p.name;
+                    setSearchValues(newSearch);
+
+                    handleChange(index, "DrugName", p.name);
+                    handleChange(index, "customDrug", "");
+
+                    const newOpen = [...openRows];
+                    newOpen[index] = false;
+                    setOpenRows(newOpen);
+
+                    setHighlighted(-1);
+                  }}
+                >
+                  {p.name}
+                </li>
+              ));
+            } else {
+              // ✅ NOT FOUND OPTION
+              return (
+                <li
+                  style={{
+                    padding: '6px 12px',
+                    color: '#007bff',
+                    cursor: 'pointer',
+                    fontStyle: 'italic'
+                  }}
+                  onClick={() => {
+                    const val = searchValues[index];
+
+                    handleChange(index, "DrugName", "Other");
+                    handleChange(index, "customDrug", val);
+
+                    const newOpen = [...openRows];
+                    newOpen[index] = false;
+                    setOpenRows(newOpen);
+                  }}
+                >
+                  Add "{val}"
+                </li>
+              );
+            }
+          })()}
+
+        </ul>
+      </div>
+    )}
+  </div>
+
+  {/* ✅ CUSTOM INPUT */}
+  {item.DrugName === "Other" && (
+    <input
+      type="text"
+      className="form-control mt-1"
+      placeholder="Enter Medicine Name"
+      value={item.customDrug}
+      onChange={(e) =>
+        handleChange(index, "customDrug", e.target.value)
+      }
+    />
+  )}
+</td>
 
 
                     <td>
@@ -701,12 +733,31 @@ export default function Medicine1({ onClose, onRefresh, index })
                         <option value='Eye/o'>Eye/o</option>
                         <option value='Tablet'>Tablet</option>
                         <option value='Syrup'>Syrup</option>
-                        <option value='Other'>Other</option>
 
                       </select>
                     </td>
 
-                    <td><input size={2} type="text" className="form-control" value={item.dose} onChange={(e) => handleChange(index, "dose", e.target.value)} onKeyDown={(e) => handleKeyDown(e, index)} disabled={index == null && item.id} /></td>
+                    <td>
+                      <select className="form-select selectpicker"
+                               data-live-search="true"
+                               aria-label="Default select example"
+                               value={item.dose}
+                               onChange={(e) => handleChange(index, "dose", e.target.value)} 
+                               onKeyDown={(e) => handleKeyDown(e, index)}
+                               disabled={index == null && item.id}
+                      >
+                        <option value='Select-Dose'>Select-Dose-</option>
+                        <option value='1 Times/Day'>1 Times/Day</option>
+                        <option value='2 Times/Day'>2 Times/Day</option>
+                        <option value='3 Times/Day'>3 Times/Day</option>
+                        <option value='4 Times/Day'>4 Times/Day</option> 
+                        <option value='6 Times/Day'>6 Times/Day</option> 
+                        <option value='Half Hourly'>Half Hourly </option> 
+                        <option value='One Hourly'>One Hourly</option>  
+                        <option value='Two Hourly'>Two Hourly</option> 
+
+                      </select>
+                    </td>
 
                     <td>
                       <div style={{ display: 'flex' }}>

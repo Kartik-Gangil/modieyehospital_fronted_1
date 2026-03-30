@@ -10,6 +10,7 @@ import React, { useEffect } from 'react';
 import Medicine1 from '../forms/Medicine1';
 import Surgery from '../forms/Surgery';
 
+
 import "./MainPrint.css";
 
 
@@ -19,6 +20,8 @@ export default function PatientHistory({ onRefresh })
   const [modalPage, setModalPage] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [printSection, setPrintSection] = useState(null);
+
+  const [modalWidth, setModalWidth] = useState(1000);
 
   const { vision, Medicine, refractionData, surgery, deleteMedicine, deleteVision, deleteRefraction, deleteSurgery } = useContext(MainContext)
 
@@ -82,11 +85,12 @@ export default function PatientHistory({ onRefresh })
 
 
   // page = string identifier, index = optional row index
-  const openDialog = (page, index = null) => {
+  const openDialog = (page, index = null, width = 1000) => {
     setShowDialog(true);
     setModalPage(page);
     // null indicates "show all"; a number selects a single item
     setSelectedIndex(index);
+    setModalWidth(width);
   };
 
   const closeDialog = () => {
@@ -159,24 +163,21 @@ export default function PatientHistory({ onRefresh })
     setPrintSection(sectionId);
   };
   useEffect(() => {
-    if (printSection) {
-      setTimeout(() => {
-        window.print();
-      }, 100);
+    if (printSection)
+     {
+      setTimeout(() => { window.print();}, 100);
     }
   }, [printSection]);
 
   useEffect(() => {
-    const afterPrint = () => {
-      setPrintSection(null);
-    };
+    const afterPrint = () => {setPrintSection(null);};
 
     window.addEventListener("afterprint", afterPrint);
 
-    return () => {
-      window.removeEventListener("afterprint", afterPrint);
-    };
+    return () => {window.removeEventListener("afterprint", afterPrint);};
   }, []);
+
+
   /************************************** */
 
 
@@ -186,7 +187,7 @@ export default function PatientHistory({ onRefresh })
     return (
       <div>
         <div className="modal show d-flex" tabIndex="-1">
-          <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: 1000, width: "92%", minHeight: 100 }} >
+          <div className="modal-dialog modal-dialog-centered"  style={{ maxWidth: modalWidth, width: "92%", minHeight: 500 }}>
             <div className="modal-content" style={{ minHeight: 400, height: 'auto' }}>
               <div className="modal-header h4">
                 {modalPage}
@@ -223,7 +224,7 @@ export default function PatientHistory({ onRefresh })
         <h3 className="fs-6 fw-bold m-0">Medicines</h3>
         <button className="btn p-0 border-0 bg-transparent" style={{ marginRight: 8 }}>
           <img src="/images/printer.png" alt="edit" style={{ width: 17 }} onClick={() => handlePrint("medicines")} />
-          <img src="/images/pencil.png" alt="edit" style={{ width: 17, marginLeft: 10 }} onClick={() => openDialog("Medicines", null)} />
+          <img src="/images/pencil.png" alt="edit" style={{ width: 17, marginLeft: 10 }} onClick={() => openDialog("Medicines", null, 1200)} />
         </button>
 
       </div>
@@ -262,7 +263,7 @@ export default function PatientHistory({ onRefresh })
               )
             }
             ) : (<tr>
-              <td colSpan="6">No record available</td>
+              <td colSpan="8">No record available</td>
             </tr>)
             }
           </tbody>
