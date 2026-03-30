@@ -83,7 +83,7 @@ function SurgerySearchSelect({ value, onChange, onKeyDown })
   const inputRef = useRef(null);
 
   const filtered = query.trim()
-    ? ALL_SURGERIES.filter(s => s.toLowerCase().startsWith(query.toLowerCase()))
+    ? ALL_SURGERIES.filter(s => s.toLowerCase().includes(query.toLowerCase()))
     : ALL_SURGERIES;
 
 

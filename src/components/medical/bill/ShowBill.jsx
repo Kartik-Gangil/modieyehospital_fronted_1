@@ -17,7 +17,7 @@ export default function ShowBill()
 
     const fetchbill=async()=>{
         var result=await getData('medical/api/list/purchaseBills');
-        console.log("nnnn",result.data)
+        // console.log("nnnn",result.data)
         setBill(result.data)
 
     }

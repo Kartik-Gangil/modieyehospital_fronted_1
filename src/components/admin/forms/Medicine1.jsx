@@ -537,7 +537,7 @@ export default function Medicine1({ onClose, onRefresh, index })
                           }}
                           onKeyDown={(e) => {
                             const rowFiltered = product?.filter(p =>
-                              p.name.toLowerCase().startsWith((searchValues[index] || '').toLowerCase())
+                              p.name.toLowerCase().includes((searchValues[index] || '').toLowerCase())
                             ) || [];
 
                             if (e.key === 'ArrowDown') {
@@ -591,7 +591,7 @@ export default function Medicine1({ onClose, onRefresh, index })
 
                               {(() => {
                                 const rowFiltered = product?.filter(p =>
-                                  p.name.toLowerCase().startsWith((searchValues[index] || '').toLowerCase())
+                                  p.name.toLowerCase().includes((searchValues[index] || '').toLowerCase())
                                 ) || [];
 
                                 return rowFiltered.length > 0 ? (

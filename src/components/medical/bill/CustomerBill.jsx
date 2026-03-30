@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import MainContext from "../../../context/MainContext";
-import { deleteData, postData, putData } from "../../../services/FetchNodeAdminServices";
+import { deleteData, getData, postData, putData } from "../../../services/FetchNodeAdminServices";
 import Header from "../../admin/homepage/Header";
 import { useContext, useState, useEffect } from "react";
 
@@ -50,6 +50,14 @@ export default function CustomerBill() {
     getAllCompany();
     getAllProduct();
   }, []);
+
+
+  const fetchbill = async () => {
+    var result = await getData('medical/api/list/purchaseBills');
+    // console.log("nnnn", result.data)
+    // setBill(result.data)
+
+  }
 
   // Update input
   const handleChange = (index, field, value) => {
@@ -110,12 +118,12 @@ export default function CustomerBill() {
       const response = await postData("medical/api/saleBill", billData);
 
       const result = response.data;
-      console.log(response);
-      if (result.success) {
+      // console.log(response);
+      if (result?.success) {
         alert("Bill Saved Successfully ✅");
         setItems([emptyRow]); // reset table
       } else {
-        alert("Failed to save bill ❌");
+        alert(response.error);
       }
     } catch (error) {
       console.error(error);
@@ -185,19 +193,19 @@ export default function CustomerBill() {
 
 
 
-    
+
 
   // yh remove krega row ko jis row k cross pr ap click karoge usi row ko delete kr dega
 
   const handleRemoveRow = (index) => {
-  if (items.length === 1) {
-    setItems([emptyRow]); // at least one row rahe
-    return;
-  }
+    if (items.length === 1) {
+      setItems([emptyRow]); // at least one row rahe
+      return;
+    }
 
-  const updated = items.filter((_, i) => i !== index);
-  setItems(updated);
-};
+    const updated = items.filter((_, i) => i !== index);
+    setItems(updated);
+  };
 
 
 
@@ -279,7 +287,7 @@ export default function CustomerBill() {
                                   handleChange(
                                     index,
                                     "mrp",
-                                    selectedProduct.mrp,
+                                    selectedProduct.mrp / (selectedProduct.Tabs || 10),
                                   );
                                 }
                               }}
@@ -321,7 +329,7 @@ export default function CustomerBill() {
                           </td>
 
                           <td>{rowAmount ? rowAmount.toFixed(2) : ""}</td>
-                          <td><i className="bi bi-x-circle" style={{justifyItems:'center', fontSize:24,marginLeft:25,cursor:'pointer'}} onClick={() => handleRemoveRow(index)} ></i></td>
+                          <td><i className="bi bi-x-circle" style={{ justifyItems: 'center', fontSize: 24, marginLeft: 25, cursor: 'pointer' }} onClick={() => handleRemoveRow(index)} ></i></td>
                         </tr>
                       );
                     })}
