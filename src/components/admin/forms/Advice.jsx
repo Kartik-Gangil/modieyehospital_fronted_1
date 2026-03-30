@@ -20,7 +20,7 @@ export default function Advice({ stat, onClose, onRefresh , index})
             setType(Advise[index]?.type|| Advise[0]?.type);
             setid(Advise[index]?.id|| Advise[0]?.id);
         }
-        else if (stat === 'treatment') {
+        else if (stat === 'Investigation') {
             // console.log(treatment)
             setDetails(treatment[index]?.message || treatment[0]?.message);
             setType(treatment[index]?.type || treatment[0]?.type);
@@ -51,7 +51,7 @@ export default function Advice({ stat, onClose, onRefresh , index})
         if (stat === 'advise') {
             result = await putData(`patient/v1/update/Advise/${id}`, formDataObj);
         }
-        else if (stat === 'treatment') {
+        else if (stat === 'Investigation') {
             result = await putData(`patient/v1/update/Treatment/${id}`, formDataObj);
         }
 
@@ -98,7 +98,7 @@ export default function Advice({ stat, onClose, onRefresh , index})
         if (stat === 'advise') {
             result = await postData(`patient/v1/advice/${Aid}`, formDataObj);
         }
-        else if (stat === 'treatment') {
+        else if (stat === 'Investigation') {
             result = await postData(`patient/v1/treatment/${Aid}`, formDataObj);
         }
 

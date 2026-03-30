@@ -49,10 +49,10 @@ export default function Patient({ onRefresh })
         </div>
       );
     }
-    else if (props === "Treatment") {
+    else if (props === "Investigation") {
       return (
         <div>
-          <Treatment stat="treatment" index={index} onClose={closeDialog} onRefresh={onRefresh} />
+          <Treatment stat="Investigation" index={index} onClose={closeDialog} onRefresh={onRefresh} />
         </div>
       );
     }
@@ -167,7 +167,7 @@ export default function Patient({ onRefresh })
         <h3 className="fs-6 fw-bold m-0">Investigation</h3>
         <button className="btn p-0 border-0 bg-transparent" style={{ marginRight: 8 }}>
           <img src="/images/printer.png" alt="edit" style={{ width: 17 }} onClick={() => handlePrint('treatment')} />
-          <img src="/images/pencil.png" alt="edit" style={{ width: 17, marginLeft: 10 }} onClick={() => openDialog("Treatment")} />
+          <img src="/images/pencil.png" alt="edit" style={{ width: 17, marginLeft: 10 }} onClick={() => openDialog("Investigation")} />
         </button>
 
       </div>

@@ -72,8 +72,7 @@ const ALL_SURGERIES = [
 
 
 // ─── Searchable Surgery Dropdown ────────────────────────────────────────────
-function SurgerySearchSelect({ value, onChange, onKeyDown }) 
-{
+function SurgerySearchSelect({ value, onChange, onKeyDown }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [highlighted, setHighlighted] = useState(0);
@@ -268,7 +267,7 @@ export default function Surgery({ index, onRefresh, onClose }) {
   const { surgery, Aid } = useContext(MainContext);
   const navigate = useNavigate();
 
-  const emptyRow = { SurgeryName: "", eye: "", message: "" };
+  const emptyRow = { SurgeryName: "", eye: "", message: "." };
   const [items, setItems] = useState([emptyRow]);
 
 
@@ -316,7 +315,7 @@ export default function Surgery({ index, onRefresh, onClose }) {
 
 
   const isRowComplete = (row) =>
-    Boolean(row?.SurgeryName?.trim() && ["left", "right", "both"].includes(row?.eye) && row?.message?.trim() );
+    Boolean(row?.SurgeryName?.trim() && ["left", "right", "both"].includes(row?.eye) && row?.message?.trim());
 
 
 
@@ -331,19 +330,19 @@ export default function Surgery({ index, onRefresh, onClose }) {
   };
 
 
-    
+
 
   // yh remove krega row ko jis row k cross pr ap click karoge usi row ko delete kr dega
 
   const handleRemoveRow = (index) => {
-  if (items.length === 1) {
-    setItems([emptyRow]); // at least one row rahe
-    return;
-  }
+    if (items.length === 1) {
+      setItems([emptyRow]); // at least one row rahe
+      return;
+    }
 
-  const updated = items.filter((_, i) => i !== index);
-  setItems(updated);
-};
+    const updated = items.filter((_, i) => i !== index);
+    setItems(updated);
+  };
 
 
 
@@ -383,7 +382,7 @@ export default function Surgery({ index, onRefresh, onClose }) {
         alert("Please enter at least one item");
         return;
       }
-      const result = await putData(`patient/v1/update/surgery/${surgeries[0].id}`,surgeries[0]);
+      const result = await putData(`patient/v1/update/surgery/${surgeries[0].id}`, surgeries[0]);
 
       if (result.status) {
         Swal.fire({
@@ -394,7 +393,7 @@ export default function Surgery({ index, onRefresh, onClose }) {
           timer: 2000,
         });
       }
-       else {
+      else {
         Swal.fire({
           position: "top-end",
           icon: "error",
@@ -420,11 +419,11 @@ export default function Surgery({ index, onRefresh, onClose }) {
 
   return (
     <div>
-      <div style={{background: "lightgrey",width: "100%",fontWeight: "bold",display: "flex",alignItems: "center",justifyContent: "center",height: 20}}>
+      <div style={{ background: "lightgrey", width: "100%", fontWeight: "bold", display: "flex", alignItems: "center", justifyContent: "center", height: 20 }}>
         Add Surgery
       </div>
 
-      <div style={{width: "100%",display: "flex", justifyContent: "center", alignItems: "center"}}>
+      <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
         <div style={{ width: "100%", margin: 10, padding: 10, borderRadius: 10 }}>
 
           {/* ✅ overflow visible so portal isn't clipped */}
@@ -466,11 +465,11 @@ export default function Surgery({ index, onRefresh, onClose }) {
                     </td>
 
                     <td>
-                      <input type="text" className="form-control" value={item.message} onChange={(e) => handleChange(idx, "message", e.target.value)} onKeyDown={(e) => handleKeyDown(e, idx)}/>
+                      <input type="text" className="form-control" value={item.message} onChange={(e) => handleChange(idx, "message", e.target.value)} onKeyDown={(e) => handleKeyDown(e, idx)} />
                     </td>
 
-                    <td><i className="bi bi-x-circle" style={{justifyItems:'center', fontSize:24,marginLeft:25,cursor:'pointer'}} onClick={() => handleRemoveRow(idx)} ></i></td>
-                    
+                    <td><i className="bi bi-x-circle" style={{ justifyItems: 'center', fontSize: 24, marginLeft: 25, cursor: 'pointer' }} onClick={() => handleRemoveRow(idx)} ></i></td>
+
                   </tr>
                 ))}
               </tbody>
