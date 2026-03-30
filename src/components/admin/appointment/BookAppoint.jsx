@@ -19,8 +19,8 @@ function PatientSearchSelect({ patients, value, onChange }) {
 
     const filtered = query.trim()
         ? patients.filter(p =>
-            p.FullName.toLowerCase().startsWith(query.toLowerCase()) ||
-            String(p.id).startsWith(query)
+            p.FullName.toLowerCase().includes(query.toLowerCase()) ||
+            String(p.id).includes(query)
         )
         : patients;
 
