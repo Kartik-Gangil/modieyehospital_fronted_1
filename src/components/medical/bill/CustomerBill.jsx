@@ -6,7 +6,8 @@ import { useContext, useState, useEffect } from "react";
 
 import "../bill/BillPrint.css";
 
-export default function CustomerBill() {
+export default function CustomerBill() 
+{
   const location = useLocation();
   const editData = location?.state?.product || [];
   const mode = location?.state?.show || "";

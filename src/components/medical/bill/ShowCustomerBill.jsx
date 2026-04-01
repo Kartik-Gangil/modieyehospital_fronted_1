@@ -4,9 +4,11 @@ import MainContext from "../../../context/MainContext";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getData } from "../../../services/FetchNodeAdminServices";
-import '../../admin/homepage/MainPrint.css'
 
-export default function ShowCustomerBill() {
+import "../bill/BillPrint.css";
+
+export default function ShowCustomerBill() 
+{
   const navigate = useNavigate();
 
   const { getAllCompany } = useContext(MainContext);
@@ -75,7 +77,7 @@ export default function ShowCustomerBill() {
 
 
   return (
-    <div>
+    <div id="printableBill" className="printArea">
       <div>
         <Header />
       </div>
@@ -97,6 +99,8 @@ export default function ShowCustomerBill() {
               Reset
             </button>
           </div>
+
+           
         </div>
 
 
@@ -112,7 +116,7 @@ export default function ShowCustomerBill() {
                 <th className="text-center">Amount</th>
                 <th className="text-center">Discount </th>
                 <th className="text-center">Total Amount</th>
-                <th className="text-center">Views</th>
+                <th className="text-center bi">Views</th>
               </tr>
             </thead>
             <tbody>
@@ -130,8 +134,8 @@ export default function ShowCustomerBill() {
                       <td className="text-center">{item.discount}</td>
                       <td className="text-center">{item.TotalAmount}</td>
 
-                      <td className="text-center">
-                        <button onClick={() => handleNavigateDetails(item)} className="bg-warning px-3 text-uppercase text-white rounded border border-0">Update</button>
+                      <td className="text-center bi">
+                        <button onClick={() => handleNavigateDetails(item)} className="bg-warning px-3 text-uppercase text-white rounded border border-0 noPrint">Update</button>
                       </td>
                     </tr>
                     )
@@ -162,6 +166,12 @@ export default function ShowCustomerBill() {
         </div>
       </div>
 
+
+<div style={{marginLeft:'85%'}}>
+       <button onClick={() => window.print()} type="button">
+                Print Bill
+      </button>
+</div>
 
     </div>)
 }

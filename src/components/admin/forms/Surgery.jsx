@@ -270,6 +270,7 @@ export default function Surgery({ index, onRefresh, onClose }) {
   const emptyRow = { SurgeryName: "", eye: "", message: "." };
   const [items, setItems] = useState([emptyRow]);
 
+  const isEditMode = index !== null && index !== undefined;
 
 
   function normalizeItems(data) {
@@ -315,7 +316,9 @@ export default function Surgery({ index, onRefresh, onClose }) {
 
 
   const isRowComplete = (row) =>
-    Boolean(row?.SurgeryName?.trim() && ["left", "right", "both"].includes(row?.eye) && row?.message?.trim());
+  {
+    return(row.SurgeryName && row.eye)
+  }
 
 
 
@@ -357,7 +360,7 @@ export default function Surgery({ index, onRefresh, onClose }) {
       return;
     }
     try {
-      const response = await postData(`patient/v1/Surgery/${Aid}`, { filteredItems });
+      const response = await postData(`patient/v1/Surgery/${Aid}`,  filteredItems );
       const result = response.data;
       if (result.success) {
         alert("Surgery Saved Successfully ✅");
@@ -384,7 +387,8 @@ export default function Surgery({ index, onRefresh, onClose }) {
       }
       const result = await putData(`patient/v1/update/surgery/${surgeries[0].id}`, surgeries[0]);
 
-      if (result.status) {
+      if (result.status) 
+      {
         Swal.fire({
           position: "top-end",
           icon: "success",
@@ -477,15 +481,22 @@ export default function Surgery({ index, onRefresh, onClose }) {
           </div>
 
           <div className="row" style={{ marginTop: 10 }}>
+             {!isEditMode && (
             <div className="col-lg-3" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <button onClick={handleSave} type="button" className="btn btn-primary">Save</button>
             </div>
+              )}
+
             <div className="col-lg-3" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <button onClick={resetData} type="button" className="btn btn-primary">Cancel</button>
             </div>
+
+             {isEditMode && (
             <div className="col-lg-3" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <button onClick={handleEditData} type="button" className="btn btn-primary">Edit</button>
             </div>
+              )}
+
             <div className="col-lg-3" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <button type="submit" className="btn btn-primary">Create Template</button>
             </div>

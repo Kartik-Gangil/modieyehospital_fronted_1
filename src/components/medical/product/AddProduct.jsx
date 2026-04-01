@@ -113,7 +113,7 @@ export default function AddProduct()
        // formData.append('rateC', rateC);
       //  formData.append('neg', neg);
 
-      formData.append('tablet',tablet);
+      formData.append('Tabs',tablet);
 
         const formDataObj = {};
 
@@ -199,7 +199,7 @@ export default function AddProduct()
             name: product,
             packing: packing,
             company: company,
-            tablet: tablet,
+            Tabs: tablet,
 
             mrp: parseFloat(mrp),
             Prate: prate,
