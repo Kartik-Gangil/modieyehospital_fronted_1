@@ -360,7 +360,7 @@ export default function Surgery({ index, onRefresh, onClose }) {
       return;
     }
     try {
-      const response = await postData(`patient/v1/Surgery/${Aid}`,  filteredItems );
+      const response = await postData(`patient/v1/Surgery/${Aid}`,  {filteredItems} );
       const result = response.data;
       if (result.success) {
         alert("Surgery Saved Successfully ✅");
