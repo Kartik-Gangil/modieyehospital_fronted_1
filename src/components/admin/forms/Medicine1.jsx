@@ -354,7 +354,7 @@ export default function Medicine1({ onClose, onRefresh, index })
         return;
       }
 
-      console.log({ filteredItems });
+      // console.log({ filteredItems });
 
       const result = await putData(`patient/v1/update/Medicine/${filteredItems[0]?.id}`, filteredItems[0]);
 
@@ -755,6 +755,7 @@ export default function Medicine1({ onClose, onRefresh, index })
                         <option value='Half Hourly'>Half Hourly </option> 
                         <option value='One Hourly'>One Hourly</option>  
                         <option value='Two Hourly'>Two Hourly</option> 
+                        <option value='Two Hourly'>At night time</option> 
 
                       </select>
                     </td>
