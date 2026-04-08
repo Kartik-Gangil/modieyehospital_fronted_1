@@ -21,7 +21,7 @@ export default function Medicine1({ onClose, onRefresh, index })
   const [openRows, setOpenRows] = useState([]);          // which rows have dropdown open
   const dropdownRefs = useRef([]);                       // one ref per row
 
-  console.log(Medicine[index]);
+  // console.log(Medicine[index]);
 
 
 
