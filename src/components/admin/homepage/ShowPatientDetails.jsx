@@ -5,7 +5,9 @@ import { useEffect } from 'react'
 import { putData } from '../../../services/FetchNodeAdminServices';
 import Swal from 'sweetalert2';
 
-export default function ShowPatientDetails() {
+export default function ShowPatientDetails()
+{
+
   const { allPatients, getAllPatients } = useContext(MainContext);
 
   const [showModal, setShowModal] = useState(false)
@@ -31,13 +33,11 @@ export default function ShowPatientDetails() {
   const handleClose = () => setShowModal(false)
 
   const handleSave = async () => {
-    console.log("Updated Patient:", selectedPatient)
+   // console.log("Updated Patient:", selectedPatient)
     try {
 
-      const result = await putData(
-        `patient/v1/update/Patient/${selectedPatient.id}`,
-        selectedPatient
-      );
+      const result = await putData(`patient/v1/update/Patient/${selectedPatient.id}`, selectedPatient);
+     // console.log("xxxx",result)
       if (result.status) {
         Swal.fire({
           position: "top-end",
@@ -62,10 +62,7 @@ export default function ShowPatientDetails() {
     setShowModal(false)
   }
 
-  /*************Dialog Box *************** */
-
-
-  /** **************************************/
+  
 
 
   return (
@@ -141,7 +138,67 @@ export default function ShowPatientDetails() {
                         />
                       </div>
 
-                      <div className="col-md-12">
+                      
+                      <div className="col-md-6">
+                        <label className="form-label">State</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="State"
+                          value={selectedPatient.State || ""}
+                          onChange={handleChange}
+                        />
+                      </div>
+
+                      
+                      <div className="col-md-6">
+                        <label className="form-label">City</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="City"
+                          value={selectedPatient.City || ""}
+                          onChange={handleChange}
+                        />
+                      </div>
+
+                      
+                      <div className="col-md-6">
+                        <label className="form-label">Hospital Branch</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="Branch"
+                          value={selectedPatient.Branch || ""}
+                          onChange={handleChange}
+                        />
+                      </div>
+
+                       <div className="col-md-6">
+                        <label className="form-label">Reffered By</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="Reffered By"
+                          value={selectedPatient.Reffered_by || ""}
+                          onChange={handleChange}
+                        />
+                      </div>
+
+                      <div className="col-md-6">
+                        <label className="form-label">Insurance</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="Insurance"
+                          value={selectedPatient.Insurance || ""}
+                          onChange={handleChange}
+                        />
+                      </div>
+
+        
+
+                      <div className="col-md-6">
                         <label className="form-label">Address</label>
                         <textarea
                           className="form-control"
