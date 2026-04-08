@@ -46,6 +46,7 @@ export default function ShowPatientDetails()
           showConfirmButton: false,
           timer: 2000,
         });
+        
       } else {
         Swal.fire({
           position: "top-end",
@@ -59,6 +60,7 @@ export default function ShowPatientDetails()
       console.error(error);
       Swal.fire({ icon: "error", title: "Server Error", timer: 2000 });
     }
+     getAllPatients();
     setShowModal(false)
   }
 
@@ -179,7 +181,7 @@ export default function ShowPatientDetails()
                         <input
                           type="text"
                           className="form-control"
-                          name="Reffered By"
+                          name="Reffered_by"
                           value={selectedPatient.Reffered_by || ""}
                           onChange={handleChange}
                         />
