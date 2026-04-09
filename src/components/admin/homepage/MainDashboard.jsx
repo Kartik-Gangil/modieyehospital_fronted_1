@@ -7,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { io } from 'socket.io-client'
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export default function MainDashboard() {
+export default function MainDashboard() 
+{
   const { getAllTodayAppointments, getAppointmentCount, changeStatus, getPatientBranch, PatientBranch, getDoctorsDetail } = useContext(MainContext)
   const navigate = useNavigate()
   const [doctorId, setDoctorId] = useState(localStorage.getItem('doctorId'))
@@ -17,6 +18,8 @@ export default function MainDashboard() {
   const [page, setPage] = useState(1);
   const [city, setCity] = useState("Select-Branch")
   const socketURL = import.meta.env.VITE_socketURL || "http://localhost:8001/"
+
+  const [searchTerm, setSearchTerm] = useState("");
 
 
   useEffect(() => {
@@ -154,6 +157,23 @@ export default function MainDashboard() {
     );
   };
 
+  /********** Searching Part*********************** */
+
+  const filteredAppointments = allTodayAppointments.filter((item) => {
+  const term = searchTerm.toLowerCase();
+
+  return (
+    item?.P_id?.toString().toLowerCase().includes(term) ||
+    item?.patient?.FullName?.toLowerCase().includes(term) ||
+    item?.patient?.Phone?.toLowerCase().includes(term) ||
+    item?.id?.toString().toLowerCase().includes(term)
+  );
+});
+
+
+/***************************************************** */
+
+
   return (<div>
 
     <div>
@@ -183,6 +203,16 @@ export default function MainDashboard() {
             )}
 
           </select>
+        </div>
+
+        <div>
+          
+
+          <div style={{ display: 'flex', alignItems: 'center', background: "lightgrey", borderRadius: 25, margin: 0, marginLeft:10 }}>
+            <i className="bi bi-search fs-4 ms-4" ></i>
+             <input type="text" placeholder="Search Here....."  value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{width: '40%', height: 30, border: 0, marginLeft: 10, outline: 0, fontSize: 18, color: '#000', background: 'transparent'}}/>
+          </div>
+          
         </div>
 
         {renderModal()}
@@ -219,7 +249,7 @@ export default function MainDashboard() {
               {
                 allTodayAppointments.length > 0 ? (
 
-                  allTodayAppointments.map((item, i) => {
+                  filteredAppointments.map((item, i) => {
 
                     return (<tr key={i}>
                       <td className="text-center">{i + 1}</td>
@@ -235,6 +265,12 @@ export default function MainDashboard() {
                           <option value='Optical'>Optical</option>
                           <option value='Counselling'>Counselling</option>
                           <option value='Miscellaneous'>Miscellaneous</option>
+                          <option value='Pending'>Pending</option>
+                          <option value='Complete'>Complete</option>
+                          <option value='Cancel'>Cancel</option>
+                          
+                          
+
                         </select>
                       </td>
                       <td className="text-center">{item?.patient?.Gender}/{item?.patient?.Age}</td>

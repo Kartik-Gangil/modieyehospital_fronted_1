@@ -49,7 +49,7 @@ export default function DoctorConcern({ onRefresh })
         </div>
       );
     }
-    else if (props === "Allegries") {
+    else if (props === "Allergies") {
       return (
         <div>
           <Allegries stat='allergies' onClose={closeDialog} onRefresh={onRefresh} />
@@ -357,10 +357,10 @@ export default function DoctorConcern({ onRefresh })
 
       <div className="d-flex justify-content-between align-items-center w-100 mb-2 px-3" style={{ background: "#f0d5d6ff", height: "27px" }} >
 
-        <h3 className="fs-6 fw-bold m-0">Allegries</h3>
+        <h3 className="fs-6 fw-bold m-0">Allergies</h3>
         <button className="btn p-0 border-0 bg-transparent" style={{ marginRight: 8 }}>
           <img src="/images/printer.png" alt="edit" style={{ width: 17 }} onClick={() => handlePrint("allegries")} />
-          <img src="/images/pencil.png" alt="edit" style={{ width: 17, marginLeft: 10 }} onClick={() => openDialog("Allegries")} />
+          <img src="/images/pencil.png" alt="edit" style={{ width: 17, marginLeft: 10 }} onClick={() => openDialog("Allergies")} />
         </button>
 
       </div>

@@ -6,11 +6,14 @@ import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 // import TextSearchbar from '../homepage/TextSearchbar'
 
-export default function ShowAllAppoint() {
+export default function ShowAllAppoint()
+ {
     const { getAllAppointments, getPatientBranch, PatientBranch, AppointmentSearch } = useContext(MainContext)
     const [allAppointments, setallAppointments] = useState([]);
     const [city, setCity] = useState("Select-Branch")
     const [searchKey, setSearchKey] = useState("");
+
+
     useEffect(() => {
         getPatientBranch()
         async function loadFirstPage() {
@@ -23,10 +26,12 @@ export default function ShowAllAppoint() {
         loadFirstPage();
     }, [city])
 
+
     const navigate = useNavigate();
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
 
+    
     const fetchMoreData = async (searchKey) => {
         // console.log('hitt')
         const nextPage = page + 1;

@@ -109,7 +109,7 @@ export default function Complaint({ stat, onClose, onRefresh, index }) {
         <div style={{ width: 600, height: 'auto', background: '#f7f1e3', margin: 10, padding: 10, borderRadius: 10 }}>
 
             <div className="mb-3">
-                <textarea value={complain} onChange={(e) => setComplain(e.target.value)} className="form-control" rows="3" placeholder="Add Compaint or Type Allegiers"></textarea>
+                <textarea value={complain} onChange={(e) => setComplain(e.target.value)} className="form-control" rows="3" placeholder="Add Compaint or Type Allergies"></textarea>
             </div>
 
             <div className="d-flex justify-content-center gap-5">

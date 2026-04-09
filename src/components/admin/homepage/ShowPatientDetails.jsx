@@ -13,6 +13,8 @@ export default function ShowPatientDetails()
   const [showModal, setShowModal] = useState(false)
   const [selectedPatient, setSelectedPatient] = useState({})
 
+  const [searchTerm,setSearchTerm]=useState("")
+
 
   useEffect(() => {
     getAllPatients()
@@ -64,6 +66,21 @@ export default function ShowPatientDetails()
     setShowModal(false)
   }
 
+
+  /********** Searching Part*********************** */
+
+  const filteredPatients = allPatients.filter((item) => {
+  const term = searchTerm.toLowerCase();
+
+  return (
+    item?.FullName?.toLowerCase().includes(term) ||
+    item?.Phone?.toLowerCase().includes(term)
+   
+  );
+});
+
+
+/***************************************************** */
   
 
 
@@ -232,8 +249,16 @@ export default function ShowPatientDetails()
         <Header />
       </div>
 
-      <div style={{ background: "lightgrey", textAlign: 'center', width: "100%", height: '50px', fontWeight: "bold", fontSize: 20 }} >
-        Patient List
+      
+      <div style={{width: '100%',height: '50px',background: "lightgrey",display: 'flex',alignItems: 'center',position: 'relative', padding: '0 10px'}}>
+        <div style={{display: 'flex',alignItems: 'center',background: "#fff",borderRadius: 20, padding: '0 10px'}}>
+          <i className="bi bi-search"></i>
+          <input type="text" placeholder="Search Here..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{border: "none", outline: "none", marginLeft: 8, height: 30}}/>
+        </div>
+
+        <div style={{position: 'absolute',left: '50%',transform: 'translateX(-50%)',fontWeight: 'bold',fontSize: 20}}>
+           Patient List
+        </div>
       </div>
 
       <div className="table-responsive">
@@ -257,7 +282,7 @@ export default function ShowPatientDetails()
 
           <tbody className="table-group-divider">
             {allPatients.length > 0 ?
-              allPatients.map((item, i) => {
+              filteredPatients.map((item, i) => {
                 return (
                   <tr key={i}>
                     <td>{item.id}</td>
