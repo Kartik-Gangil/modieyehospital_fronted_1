@@ -190,6 +190,8 @@ export default function DashBoard()
                 <option value='Optical'>Optical</option>
                 <option value='Counselling'>Counselling</option>
                 <option value='Miscellaneous'>Miscellaneous</option>
+                <option value='Completed'>Completed</option>
+                <option value='Pending'>Pending</option>
               </select>
             </div>
           </div>

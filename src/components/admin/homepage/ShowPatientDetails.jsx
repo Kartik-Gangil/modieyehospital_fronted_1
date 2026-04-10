@@ -5,15 +5,14 @@ import { useEffect } from 'react'
 import { putData } from '../../../services/FetchNodeAdminServices';
 import Swal from 'sweetalert2';
 
-export default function ShowPatientDetails()
-{
+export default function ShowPatientDetails() {
 
   const { allPatients, getAllPatients } = useContext(MainContext);
 
   const [showModal, setShowModal] = useState(false)
   const [selectedPatient, setSelectedPatient] = useState({})
 
-  const [searchTerm,setSearchTerm]=useState("")
+  const [searchTerm, setSearchTerm] = useState("")
 
 
   useEffect(() => {
@@ -35,11 +34,11 @@ export default function ShowPatientDetails()
   const handleClose = () => setShowModal(false)
 
   const handleSave = async () => {
-   // console.log("Updated Patient:", selectedPatient)
+    // console.log("Updated Patient:", selectedPatient)
     try {
 
       const result = await putData(`patient/v1/update/Patient/${selectedPatient.id}`, selectedPatient);
-     // console.log("xxxx",result)
+      // console.log("xxxx",result)
       if (result.status) {
         Swal.fire({
           position: "top-end",
@@ -48,7 +47,7 @@ export default function ShowPatientDetails()
           showConfirmButton: false,
           timer: 2000,
         });
-        
+
       } else {
         Swal.fire({
           position: "top-end",
@@ -62,7 +61,7 @@ export default function ShowPatientDetails()
       console.error(error);
       Swal.fire({ icon: "error", title: "Server Error", timer: 2000 });
     }
-     getAllPatients();
+    getAllPatients();
     setShowModal(false)
   }
 
@@ -70,18 +69,18 @@ export default function ShowPatientDetails()
   /********** Searching Part*********************** */
 
   const filteredPatients = allPatients.filter((item) => {
-  const term = searchTerm.toLowerCase();
+    const term = searchTerm.toLowerCase();
 
-  return (
-    item?.FullName?.toLowerCase().includes(term) ||
-    item?.Phone?.toLowerCase().includes(term)
-   
-  );
-});
+    return (
+      item?.FullName?.toLowerCase().includes(term) ||
+      item?.Phone?.toLowerCase().includes(term) ||
+      item?.id?.toString().includes(term)
+    );
+  });
 
 
-/***************************************************** */
-  
+  /***************************************************** */
+
 
 
   return (
@@ -157,7 +156,7 @@ export default function ShowPatientDetails()
                         />
                       </div>
 
-                      
+
                       <div className="col-md-6">
                         <label className="form-label">State</label>
                         <input
@@ -169,7 +168,7 @@ export default function ShowPatientDetails()
                         />
                       </div>
 
-                      
+
                       <div className="col-md-6">
                         <label className="form-label">City</label>
                         <input
@@ -181,7 +180,7 @@ export default function ShowPatientDetails()
                         />
                       </div>
 
-                      
+
                       <div className="col-md-6">
                         <label className="form-label">Hospital Branch</label>
                         <input
@@ -193,7 +192,7 @@ export default function ShowPatientDetails()
                         />
                       </div>
 
-                       <div className="col-md-6">
+                      <div className="col-md-6">
                         <label className="form-label">Reffered By</label>
                         <input
                           type="text"
@@ -215,7 +214,7 @@ export default function ShowPatientDetails()
                         />
                       </div>
 
-        
+
 
                       <div className="col-md-6">
                         <label className="form-label">Address</label>
@@ -249,15 +248,15 @@ export default function ShowPatientDetails()
         <Header />
       </div>
 
-      
-      <div style={{width: '100%',height: '50px',background: "lightgrey",display: 'flex',alignItems: 'center',position: 'relative', padding: '0 10px'}}>
-        <div style={{display: 'flex',alignItems: 'center',background: "#fff",borderRadius: 20, padding: '0 10px'}}>
+
+      <div style={{ width: '100%', height: '50px', background: "lightgrey", display: 'flex', alignItems: 'center', position: 'relative', padding: '0 10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', background: "#fff", borderRadius: 20, padding: '0 10px' }}>
           <i className="bi bi-search"></i>
-          <input type="text" placeholder="Search Here..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{border: "none", outline: "none", marginLeft: 8, height: 30}}/>
+          <input type="text" placeholder="Search Here..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ border: "none", outline: "none", marginLeft: 8, height: 30 }} />
         </div>
 
-        <div style={{position: 'absolute',left: '50%',transform: 'translateX(-50%)',fontWeight: 'bold',fontSize: 20}}>
-           Patient List
+        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontWeight: 'bold', fontSize: 20 }}>
+          Patient List
         </div>
       </div>
 
@@ -282,7 +281,7 @@ export default function ShowPatientDetails()
 
           <tbody className="table-group-divider">
             {allPatients.length > 0 ?
-              filteredPatients.map((item, i) => {
+              filteredPatients.sort((a, b) => a.id - b.id).map((item, i) => {
                 return (
                   <tr key={i}>
                     <td>{item.id}</td>

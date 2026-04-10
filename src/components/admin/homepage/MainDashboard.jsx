@@ -7,8 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { io } from 'socket.io-client'
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export default function MainDashboard() 
-{
+export default function MainDashboard() {
   const { getAllTodayAppointments, getAppointmentCount, changeStatus, getPatientBranch, PatientBranch, getDoctorsDetail } = useContext(MainContext)
   const navigate = useNavigate()
   const [doctorId, setDoctorId] = useState(localStorage.getItem('doctorId'))
@@ -160,18 +159,18 @@ export default function MainDashboard()
   /********** Searching Part*********************** */
 
   const filteredAppointments = allTodayAppointments.filter((item) => {
-  const term = searchTerm.toLowerCase();
+    const term = searchTerm.toLowerCase();
 
-  return (
-    item?.P_id?.toString().toLowerCase().includes(term) ||
-    item?.patient?.FullName?.toLowerCase().includes(term) ||
-    item?.patient?.Phone?.toLowerCase().includes(term) ||
-    item?.id?.toString().toLowerCase().includes(term)
-  );
-});
+    return (
+      item?.P_id?.toString().toLowerCase().includes(term) ||
+      item?.patient?.FullName?.toLowerCase().includes(term) ||
+      item?.patient?.Phone?.toLowerCase().includes(term) ||
+      item?.id?.toString().toLowerCase().includes(term)
+    );
+  });
 
 
-/***************************************************** */
+  /***************************************************** */
 
 
   return (<div>
@@ -206,13 +205,13 @@ export default function MainDashboard()
         </div>
 
         <div>
-          
 
-          <div style={{ display: 'flex', alignItems: 'center', background: "lightgrey", borderRadius: 25, margin: 0, marginLeft:10 }}>
+
+          <div style={{ display: 'flex', alignItems: 'center', background: "lightgrey", borderRadius: 25, margin: 0, marginLeft: 10 }}>
             <i className="bi bi-search fs-4 ms-4" ></i>
-             <input type="text" placeholder="Search Here....."  value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{width: '40%', height: 30, border: 0, marginLeft: 10, outline: 0, fontSize: 18, color: '#000', background: 'transparent'}}/>
+            <input type="text" placeholder="Search Here....." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ width: '40%', height: 30, border: 0, marginLeft: 10, outline: 0, fontSize: 18, color: '#000', background: 'transparent' }} />
           </div>
-          
+
         </div>
 
         {renderModal()}
@@ -256,7 +255,7 @@ export default function MainDashboard()
                       <td className="text-center">{item?.P_id}</td>
                       <td className="text-center">{item?.patient?.FullName}</td>
                       <td className="text-center">
-                        <select className="form-select" value={item?.status} onChange={e => handleStatusChange(item.id, e.target.value)}>
+                        <select className={`form-select ${item?.status === 'Completed' ? 'bg-success text-white fw-bold' : item?.status === 'Cancelled' ? 'bg-danger text-white fw-bold' : item?.status === 'Pending' ? 'bg-warning fw-bold' : ''}`} value={item?.status} onChange={e => handleStatusChange(item.id, e.target.value)}>
                           <option value="Reception">Reception</option>
                           <option value='Refraction'>Refraction</option>
                           <option value="Consultation">Consultation</option>
@@ -266,10 +265,10 @@ export default function MainDashboard()
                           <option value='Counselling'>Counselling</option>
                           <option value='Miscellaneous'>Miscellaneous</option>
                           <option value='Pending'>Pending</option>
-                          <option value='Complete'>Complete</option>
-                          <option value='Cancel'>Cancel</option>
-                          
-                          
+                          <option value='Completed'>Completed</option>
+                          <option value='Cancelled'>Cancelled</option>
+
+
 
                         </select>
                       </td>
